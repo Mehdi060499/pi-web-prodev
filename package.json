@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "framer-motion": "^11.0.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.24.3",
+    "@babel/preset-react": "^7.24.1",
+    "@symfony/webpack-encore": "^4.6.1",
+    "webpack-notifier": "^1.15.0"
+  },
+  "scripts": {
+    "encore": "encore",
+    "dev": "encore dev"
+  }
+}

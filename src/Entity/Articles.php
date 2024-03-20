@@ -11,7 +11,7 @@ class Articles
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idarticle = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -30,12 +30,12 @@ class Articles
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->idarticle;
     }
 
-    public function setId(int $id): static
+    public function setId(int $idarticle): static
     {
-        $this->id = $id;
+        $this->idarticle = $idarticle;
 
         return $this;
     }
@@ -59,7 +59,7 @@ class Articles
 
     public function setDescription(string $description): static
     {
-        
+
         $this->description = $description;
 
         return $this;

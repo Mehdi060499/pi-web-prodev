@@ -15,8 +15,13 @@ class ArticlesController extends AbstractController
 
     public function index(): Response
     {
+        $articles = $this->getAll();
+
         return $this->render('articles/index.html.twig', [
             'controller_name' => 'ArticlesController',
+            'message' => 'Bonjour, notre projet demard maintenant',
+            'articles' => $articles, // Passer les articles à la vue
+
         ]);
     }
 
