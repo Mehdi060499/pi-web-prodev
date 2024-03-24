@@ -1,0 +1,7 @@
+app_articles:
+    path: /articles
+    controller: 'App\Controller\ArticlesController::index'
+
+article_ajouter:
+    path: /article/ajouter
+    controller: 'App\Controller\ArticlesController::ajouter'

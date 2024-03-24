@@ -1,4 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
+const tailwindcss = require('tailwindcss');
+
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -15,6 +17,19 @@ Encore
     //.setManifestKeyPrefix('build/')
     .enableReactPreset()
 
+    .addEntry('app', './assets/styles/app.css')
+
+    .enablePostCssLoader(options => {
+        options.postcssOptions = {
+            plugins: [
+                tailwindcss('./tailwind.config.js'),
+                require('autoprefixer'),
+            ],
+        };
+    })
+
+
+
 
     /*
      * ENTRY CONFIG
@@ -22,8 +37,8 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    .addEntry('app', './assets/app.js')
-    .addStyleEntry('style', './assets/styles/app.css')
+    //.addEntry('app', './assets/app.js')
+    .addStyleEntry('style', './assets/styles/app.scss')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
@@ -57,13 +72,13 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
 
     // uncomment if you use React
-    //.enableReactPreset()
+    .enableReactPreset()
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher

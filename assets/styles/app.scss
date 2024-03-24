@@ -1,3 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .tete {
     display: inline-flex;
     list-style: none;
@@ -63,3 +67,11 @@ select {
     background-color: rgba(80, 255, 51, 0.38);
 
   }
+
+  .button-container .btn {
+    opacity: 0; /* Boutons initialement transparents */
+    transition: opacity 0.3s; /* Transition de l'opacité */}
+
+.button-container:hover .btn {
+    opacity: 1; /* Affichage des boutons lors du survol */
+}

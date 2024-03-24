@@ -1,0 +1,52 @@
+{# templates/article/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un article{% endblock %}
+
+{% block body %}
+
+<div class="grid-container header">
+    <div class="grid-item " id="i1">
+        <img src="{{asset('Images/person.svg')}}" width="32"  height="32"/>
+        <img src="{{asset('Images/list.svg')}}" width="32"  height="32"/>
+        <h1 id="menu">MENU</h1>
+    </div>
+    <div class="grid-item titre">
+        <h1 >M TOUNSI L TOUNSI</h1>
+    </div>
+    <div class="grid-item " id="i2">
+        <img src="{{asset('Images/search.svg')}}" width="32"  height="32"/>
+        <img src="{{asset('Images/heart.svg')}}" width="32"  height="32"/>
+        <img src="{{asset('Images/cart.svg')}}" width="32"  height="32"/>
+    </div>
+</div>
+    <div class="container">
+    <h1>Ajouter un article</h1>
+
+    {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+    <div class="mb-3 col-md-6">
+        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3 col-md-6">
+        {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3 col-md-6">
+        {{ form_row(form.quantite, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3 col-md-6">
+        {{ form_row(form.prix, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    {# Afficher l'image si elle est présente #}
+    {% if form.vars.value.image %}
+        <img src="{{ asset('images/' ~ form.vars.value.image) }}" alt="Image de l'article" class="mb-3 img-fluid">
+    {% endif %}
+    <div class="mb-3 col-md-6">
+        {{ form_row(form.image, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3 col-md-6">
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
