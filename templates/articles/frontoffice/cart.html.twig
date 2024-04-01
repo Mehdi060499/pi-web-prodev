@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block title %}M TOUNSI L TOUNSI{% endblock %}
+
+
+
+{% block body %}
+
+<div class="grid-container header">
+    <div class="grid-item " id="i1">
+        <img src="{{asset('Images/person.svg')}}" width="32"  height="32"/>
+        <img src="{{asset('Images/list.svg')}}" width="32"  height="32" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"/>
+
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+  <img src="{{asset('Images/M Tounsi.jpg')}}" class="img-fluid mx-auto d-block" alt="..." width="200px" height="200px">
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+<div class="list-group">
+  <button type="button" class="list-group-item list-group-item-action active" aria-current="true">
+Mon Dashboard  </button>
+  <button type="button" class="list-group-item list-group-item-action">Mes Articles</button>
+  <button type="button" class="list-group-item list-group-item-action">Mes Commandes</button>
+  <button type="button" class="list-group-item list-group-item-action">Promotions</button>
+  <button type="button" class="list-group-item list-group-item-action">Reclamations</button>
+</div>
+    <div class="dropdown mt-3">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+        Dropdown button
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+        <h1 id="menu">MENU</h1>
+    </div>
+    <div class="grid-item titre">
+        <h1 >M TOUNSI L TOUNSI</h1>
+    </div>
+    <div class="grid-item " id="i2">
+        <div id="search-box" style="display: none;">
+          <input type="text" name="search" id="search-input" cols="30" rows="10"></input>
+        </div>
+        <img id="search-icon" src="{{asset('Images/search.svg')}}" width="32"  height="32"/>
+
+        <img src="{{asset('Images/heart.svg')}}" width="32"  height="32"/>
+        <img src="{{asset('Images/cart.svg')}}" width="32"  height="32"/>
+    </div>
+</div>
+
+<div class="container text-center">
+  <div class="row align-items-start">
+    <div class="col">
+    Produit
+    </div>
+    <div class="col">
+      Prix
+    </div>
+    <div class="col">
+      Quantité
+    </div>
+    <div class="col">
+      Sous-total
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

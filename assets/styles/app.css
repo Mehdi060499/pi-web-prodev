@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .tete {
     display: inline-flex;
@@ -65,6 +65,8 @@ select {
 
   footer{
     background-color: rgba(80, 255, 51, 0.38);
+    bottom: 0;
+    width:100%;
 
   }
 

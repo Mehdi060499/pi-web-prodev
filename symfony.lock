@@ -29,6 +29,9 @@
     "knplabs/knp-menu-bundle": {
         "version": "v3.3.0"
     },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.3.0"
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -53,7 +56,7 @@
         },
         "files": [
             "./assets/app.js",
-            "./assets/styles/app.css",
+            "./assets/styles/app.scss",
             "./config/packages/asset_mapper.yaml",
             "./importmap.php"
         ]
@@ -289,7 +292,7 @@
         },
         "files": [
             "./assets/app.js",
-            "./assets/styles/app.css",
+            "./assets/styles/app.scss",
             "./config/packages/webpack_encore.yaml",
             "./package.json",
             "./webpack.config.js"
