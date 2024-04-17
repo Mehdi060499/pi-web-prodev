@@ -1,25 +1,42 @@
 <?php
 
 namespace App\Entity;
-
+use App\Repository\VendeurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Table(name: "vendeur")]
-#[ORM\Entity]
+
+#[ORM\Entity(repositoryClass: VendeurRepository::class)]
 class Vendeur
-{
-    private ?int $idvendeur;
+{ #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "IdVendeur", type: "integer", nullable: false)]
+   private ?int $idvendeur =  null;
 
-    private ?string $nom;
+   
+   #[ORM\Column(name: "nom", type: "string", length: 255, nullable: false)]
+   private ?string $nom = null;
 
-    #[ORM\Column(name: "nomproduit", type: "string", length: 30, nullable: false)]
-    private ?string $nomproduit;
+  
+   #[ORM\Column(name: "nomproduit", type: "string", length: 255, nullable: false)]
+   private ?string $nomproduit = null;
 
-    private ?string $email;
+ 
+   #[ORM\Column(name: "email", type: "string", length: 255, nullable: false)]
+   private ?string $email = null;
 
-    private ?string $motdepasse;
+   #[ORM\Column(name: "motdepasse", type: "string", length: 255, nullable: false)]
+   private ?string $motdepasse = null;
 
-    private ?string $description;
+   #[ORM\Column(name: "description", type: "string", length: 255, nullable: false)]
+   private ?string $description = null;
+
+   #[ORM\Column(name: "type", type: "string", length: 255, nullable: false)]
+   private ?string $type = null;
+
+   #[ORM\Column(name: "image", type: "string", length: 255, nullable: false)]
+   private ?string $image = null;
+
 
     public function getIdvendeur(): ?int
     {
@@ -34,6 +51,7 @@ class Vendeur
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -45,6 +63,7 @@ class Vendeur
     public function setNomproduit(string $nomproduit): static
     {
         $this->nomproduit = $nomproduit;
+
         return $this;
     }
 
@@ -56,6 +75,7 @@ class Vendeur
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -67,6 +87,7 @@ class Vendeur
     public function setMotdepasse(string $motdepasse): static
     {
         $this->motdepasse = $motdepasse;
+
         return $this;
     }
 
@@ -78,6 +99,33 @@ class Vendeur
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+
 }
