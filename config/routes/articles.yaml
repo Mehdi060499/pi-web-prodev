@@ -15,3 +15,4 @@ article_modifier:
 articles_show:
     path: /articles/show/{nom}  # Inclure le paramètre {nom}
     controller: App\Controller\ArticlesController::getOneByNom
+

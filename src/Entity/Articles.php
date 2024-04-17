@@ -33,13 +33,6 @@ class Articles
         return $this->idarticle;
     }
 
-    public function setId(int $idarticle): static
-    {
-        $this->idarticle = $idarticle;
-
-        return $this;
-    }
-
     public function getNom(): ?string
     {
         return $this->nom;

@@ -31,4 +31,4 @@ services:
 
 # config/services.yaml
 parameters:
-    articles_images_directory: '%kernel.project_dir%/public/images/articles'
+    articles_images_directory: '/pictures'
