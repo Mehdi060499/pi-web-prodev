@@ -337,7 +337,7 @@
                                 <!-- text-->
                                 <div class="dropdown-divider"></div>
                                 <!-- text-->
-                                <a href="pages-login.html" class="dropdown-item"><i class="fas fa-power-off"></i> Logout</a>
+                                <a href="{{ path ('logout')}}" class="dropdown-item"><i class="fas fa-power-off"></i> Logout</a>
                                 <!-- text-->
                             </div>
                         </div>
@@ -352,6 +352,7 @@
                                 <li><a href="{{ path ('signup')}}">Add </a></li>
                                 <li><a href="{{ path ('Delete')}}">Delete</a></li>
                                 <li><a href="{{ path ('allusers')}}">All Users</a></li>
+                                <li><a href="{{ path ('logout')}}">logout</a></li>
                             </ul>
                         </li>
                        
@@ -392,7 +393,7 @@
                   
              <li class="nav-small-cap">--- SUPPORT</li>
                         <li>
-                            <a class="waves-effect waves-dark" href="pages-login.html" aria-expanded="false">
+                            <a class="waves-effect waves-dark" href="{{ path ('logout')}}" aria-expanded="false">
                                 <i class="far fa-circle text-danger"></i>
                                 <span class="hide-menu">Log Out</span>
                             </a>
@@ -420,14 +421,11 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h4 class="text-themecolor">Dashboard 1</h4>
+                        <h4 class="text-themecolor"></h4>
                     </div>
                     <div class="col-md-7 align-self-center text-right">
                         <div class="d-flex justify-content-end align-items-center">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                                <li class="breadcrumb-item active">Dashboard 1</li>
-                            </ol>
+                          
                             <button type="button" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Create New</button>
                         </div>
                     </div>

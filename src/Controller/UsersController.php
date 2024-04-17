@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Doctrine\Persistence\ManagerRegistry;
 
 
 
@@ -26,20 +27,39 @@ class UsersController extends AbstractController
 {
   
     #[Route('/users', name: 'app_users')]
-    public function index(): Response
-    {
+    public function index(Request $request,SessionInterface $session,UserRepository $userRepository): Response
+    {$userId = $request->getSession()->get('user_id');
+    
+        // Fetch the user data using the user_id
+        $user2 = $userRepository->find($userId);
         return $this->render('users/home.html.twig', [
-            'controller_name' => 'UsersController',
+           'user2'=>$user2,
         ]);
+     
     }
 
     #[Route('/profile', name: 'profile')]
-    public function profile(): Response
-    {
+    public function profile(Request $request,SessionInterface $session,UserRepository $userRepository): Response
+    {    // Get the user_id from the session
+        $userId = $request->getSession()->get('user_id');
+    
+        // Fetch the user data using the user_id
+        $user = $userRepository->find($userId);
         return $this->render('users/Profilefront.html.twig', [
-            'controller_name' => 'UsersController',
-        ]);
+            'user' => $user,]);
+       
+        
     }
+
+    #[Route('/logout', name: 'logout',methods: ['GET', 'POST'])]
+public function logout(Request $request): Response
+{
+    // Invalidate the session
+    $request->getSession()->invalidate();
+
+    // Redirect to the login page or any other page after logout
+    return $this->redirectToRoute('userfront2');
+}
 
     #[Route('/signup', name: 'signup')]
     public function signup(Request $request): Response
@@ -132,12 +152,16 @@ class UsersController extends AbstractController
     
 
     #[Route('/allusers', name: 'allusers')]
-    public function allusers(UserRepository $userRepository): Response
-    {
+    public function allusers(Request $request,SessionInterface $session,UserRepository $userRepository): Response
+    { $userId = $request->getSession()->get('user_id');
+    
+        // Fetch the user data using the user_id
+        $user2 = $userRepository->find($userId);
         $users = $userRepository->findAll();
 
         return $this->render('users/allusers.html.twig', [
             'users' => $users,
+            'user2'=>$user2,
         ]);
     }
 
@@ -166,6 +190,41 @@ class UsersController extends AbstractController
         return $this->render('users/Delete.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/{id}/edit', name: 'update', methods: ['GET', 'POST'])]
+    public function edit($id,Request $request, UserRepository $userRepository,ManagerRegistry $manager): Response
+    {
+        $user = $userRepository->find($id);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $manager->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('users/update.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_users_delete2', methods: ['POST'])]
+    public function delete2($id, UserRepository $userRepository, Request $request): Response
+    {
+        $users = $userRepository->find($id);
+    
+        if ($this->isCsrfTokenValid('delete'.$users->getidclient(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($users);
+            $entityManager->flush();
+        }
+    
+        return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
     }
 
 
