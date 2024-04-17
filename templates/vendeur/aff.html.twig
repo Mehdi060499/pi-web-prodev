@@ -1,0 +1,57 @@
+{% extends 'back.html.twig' %}
+{% block title %}
+    All Users
+{% endblock %}
+
+{% block ktiba %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">All Vendeurs</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>IdVendeur</th>
+                
+                <th>nom</th>
+
+                <th>nomproduit</th>
+
+                <th>email</th>
+
+                <th>motdepasse</th>
+
+                <th>description</th>
+
+                <th>type</th>
+
+          
+
+            </tr>
+        </thead>
+        <tbody>
+           {% for vendeur in Vendeur %}
+              <tr>
+                  <td>{{vendeur.IdVendeur}} </td>
+                  <td>{{vendeur.nom}} </td>
+                <td>{{vendeur.nomproduit}} </td>
+                <td>{{vendeur.email}} </td>
+                <td>{{vendeur.motdepasse}} </td>
+                <td>{{vendeur.description}} </td>
+                <td>{{vendeur.type}} </td>
+                <td> <a href="{{ path('app_update', {'id': vendeur.IdVendeur}) }}">edit</a></td> 
+                <td>{{ include('vendeur/delete.html.twig') }} </td>
+              </tr>
+          {% endfor %}
+        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
