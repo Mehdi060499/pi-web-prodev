@@ -1,0 +1,34 @@
+<table border="1" align="center">
+        <thead>
+            <tr>
+                <th>IdVendeur</th>
+                
+                <th>nom</th>
+
+                <th>nomproduit</th>
+
+                <th>email</th>
+
+                <th>motdepasse</th>
+
+                <th>description</th>
+
+                <th>type</th>
+
+          
+
+            </tr>
+        </thead>
+        <tbody>
+           {% for vendeur in Vendeur %}
+              <tr>
+                  <td>{{vendeur.IdVendeur}} </td>
+                  <td>{{vendeur.nom}} </td>
+                <td>{{vendeur.nomproduit}} </td>
+                <td>{{vendeur.email}} </td>
+                <td>{{vendeur.motdepasse}} </td>
+                <td>{{vendeur.description}} </td>
+                <td>{{vendeur.type}} </td>
+              </tr>
+          {% endfor %}
+        </table>
