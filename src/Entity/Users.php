@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints as AppAssert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class Users
@@ -34,10 +35,13 @@ class Users
     #[ORM\Column(name: "adresse", type: "string", length: 255, nullable: false)]
     private ?string $adresse ;
 
+    #[AppAssert\UniqueEmail]
     #[Assert\NotBlank(message: "L'email est requis")]
     #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide.")]
     #[ORM\Column(name: "email", type: "string", length: 255, nullable: false)]
     private ?string $email ;
+
+
 
     #[Assert\NotBlank(message: "Le rôle est requis")]
 #[Assert\Choice(choices: [0, 1, 2], message: "Le rôle doit être 0, 1 ou 2")]
