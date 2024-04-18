@@ -1,39 +1,35 @@
 <?php
 
 namespace App\Entity;
-
+use App\Repository\StockRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Stock
- *
- * @ORM\Table(name="stock", indexes={@ORM\Index(name="stock_vendeur", columns={"Idvendeur"})})
- * @ORM\Entity
- */
-#[ORM\Table(name: "Stock")]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: StockRepository::class)]
+
 class Stock
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "NONE")]
-    #[ORM\OneToOne(targetEntity: "Vendeur")]
-    #[ORM\JoinColumn(name: "IdVendeur", referencedColumnName: "IdVendeur")]
-    private ?Vendeur $IdVendeur;
-
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(name: "idstock", type: "integer", nullable: false)]
-    private ?int  $idstock = null;
+    private ?int  $idstock;
+
+    #[ORM\ManyToOne(targetEntity: Vendeur::class)]
+    #[ORM\JoinColumn(name: "Idvendeur", referencedColumnName: "IdVendeur")]
+    private ?Vendeur $Idvendeur;
+
+
+
 
     #[ORM\Column(name: "nomproduit", type: "string", length: 255, nullable: false)]
-    private $nomproduit;
+    private ?string $nomproduit;
 
     #[ORM\Column(name: "quantite", type: "integer", nullable: false)]
     private ?int $quantite;
 
-    #[ORM\Column(name: "prixUnite", type: "float", nullable: false)]
-    private ?float $prixUnite;
+    #[ORM\Column(name: "prix_unite", type: "float", nullable: false)]
+    private ?float $prix_unite;
 
 
     public function getIdstock(): ?int
@@ -67,24 +63,24 @@ class Stock
 
     public function getPrixUnite(): ?float
     {
-        return $this->prixUnite;
+        return $this->prix_unite;
     }
 
-    public function setPrixUnite(float $prixUnite): static
+    public function setPrixUnite(float $prix_unite): static
     {
-        $this->prixUnite = $prixUnite;
+        $this->prix_unite = $prix_unite;
 
         return $this;
     }
 
     public function getIdvendeur(): ?Vendeur
     {
-        return $this->idvendeur;
+        return $this->Idvendeur;
     }
 
-    public function setIdvendeur(?Vendeur $idvendeur): static
+    public function setIdvendeur(?Vendeur $Idvendeur): static
     {
-        $this->idvendeur = $idvendeur;
+        $this->Idvendeur = $Idvendeur;
 
         return $this;
     }

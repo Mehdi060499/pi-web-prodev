@@ -10,36 +10,60 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\VendeurRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Stock;
+use App\Form\StockType;
+use App\Repository\StockRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class VendeurController extends AbstractController
 {
-    #[Route('/inscription', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
-    public function new(Request $request, VendeurRepository $VendeurRepository,ManagerRegistry $manager): Response
+    #[Route('/newv', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
+    public function newVendeur(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $em = $manager->getManager();
-        $Vendeur = new Vendeur();
-        $form = $this->createForm(VendeurFormType::class, $Vendeur);
+        $vendeur = new Vendeur();
+        $form = $this->createForm(VendeurFormType::class, $vendeur);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-           // $studentRepository->save($student, true);
-           $em->persist($Vendeur);
-           $em->flush();
-
-            return $this->redirectToRoute('app_vendeur', [], Response::HTTP_SEE_OTHER);
+            $entityManager->persist($vendeur);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_stock_new', ['vendeurId' => $vendeur->getIdvendeur()]);
         }
-
-        return $this->renderForm('vendeur/inscription.html.twig', [
-            'vendeur' => $Vendeur,
-            'form' => $form,
+    
+        return $this->render('vendeur/inscription.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
+   #[Route('/news/{vendeurId}', name: 'app_stock_new', methods: ['GET', 'POST'])]
+public function newStock(Request $request, VendeurRepository $vendeurRepository, $vendeurId , EntityManagerInterface $entityManager): Response
+{
+    $vendeur = $vendeurRepository->findOneBy(['idvendeur' => $vendeurId]);
+    $stock = new Stock();
+    $form = $this->createForm(StockType::class, $stock);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $stock->setIdvendeur($vendeur);
+        $entityManager->persist($stock);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_vendeur');
+    }
+
+    return $this->render('vendeur/news.html.twig', [
+        'form2' => $form->createView(),
+    ]);
+}
+
+
     #[Route('/aff', name: 'app_vendeur', methods: ['GET'])]
-    public function list(VendeurRepository $VendeurRepository): Response
+    public function list(VendeurRepository $VendeurRepository , StockRepository $StockRepository): Response
     {
         return $this->render('vendeur/aff.html.twig', [
             'Vendeur' => $VendeurRepository->findAll(),
+            'stock' => $StockRepository->findAll()
         ]);
     }
 

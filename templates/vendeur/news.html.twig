@@ -12,56 +12,28 @@
             <h4 class="card-title">Signup</h4>
             <div class="row">
                 <div class="col-sm-12 col-xs-12">
-               {{ form_start(form, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
+              
+   {{ form_start(form2, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
 
+          
 <div class="form-group">
-    <label for="vendeur_nom">Vendeur Name</label>
-    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Enter Name'}}) }}
-    {{ form_errors(form.nom) }}
-</div>
-
-<div class="form-group">
-    <label for="vendeur_productname">Product Name</label>
-    {{ form_widget(form.nomproduit, {'attr': {'class': 'form-control', 'placeholder': 'Enter product Name'}}) }}
-    {{ form_errors(form.nomproduit) }}
-
+    <label for="vendeur_product_image">Quantite</label>
+    {{ form_widget(form2.quantite, {'attr': {'class': 'form-control', 'placeholder': 'Enter image'}}) }}
+    {{ form_errors(form2.quantite) }}
 </div>
 
 <div class="form-group">
-    <label for="vendeur_email">Email</label>
-    {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter Email'}}) }}
-    {{ form_errors(form.email) }}
+    <label for="vendeur_product_image">PrixUnite</label>
+    {{ form_widget(form2.prix_unite, {'attr': {'class': 'form-control', 'placeholder': 'Enter image'}}) }}
+    {{ form_errors(form2.prix_unite) }}
 </div>
-<div class="form-group">
-    <label for="vendeur_motdepasse">Password</label>
-    {{ form_widget(form.motdepasse, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
-    {{ form_errors(form.motdepasse) }}
-</div>
-<div class="form-group">
-    <label for="vendeur_productdescription">Product Description</label>
-    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter description'}}) }}
-    {{ form_errors(form.description) }}
-</div>
-<div class="form-group">
-    <label for="vendeu_product_type">Type</label>
-    {{ form_widget(form.type, {'attr': {'class': 'form-control', 'placeholder': 'Enter type'}}) }}
-    {{ form_errors(form.type) }}
-</div>
-<div class="form-group">
-    <label for="vendeur_product_image">Image</label>
-    {{ form_widget(form.image, {'attr': {'class': 'form-control', 'placeholder': 'Enter image'}}) }}
-    {{ form_errors(form.image) }}
-</div>
-
-
 
 <div class="form-group form-button">
-    {{ form_row(form) }}
+    {{ form_row(form2) }}
     
     <button type="submit" class="btn btn-dark">Signup</button>
 </div>
-{{ form_end(form) }}
-
+{{ form_end(form2) }}
     {% for message in app.flashes('error') %}
         <div class="alert alert-danger">
             {{ message }}

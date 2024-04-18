@@ -13,27 +13,35 @@ class Vendeur
     #[ORM\Column(name: "IdVendeur", type: "integer", nullable: false)]
    private ?int $idvendeur =  null;
 
-   
+   #[Assert\NotBlank(message: "Nom Required")]
    #[ORM\Column(name: "nom", type: "string", length: 255, nullable: false)]
    private ?string $nom = null;
 
-  
+   #[Assert\NotBlank(message: "Product name required")]
    #[ORM\Column(name: "nomproduit", type: "string", length: 255, nullable: false)]
    private ?string $nomproduit = null;
 
- 
+   #[Assert\NotBlank(message: "email required")]
+   #[Assert\Email(message: "email '{{ value }}' not valid.")]
    #[ORM\Column(name: "email", type: "string", length: 255, nullable: false)]
    private ?string $email = null;
 
+
+   #[Assert\NotBlank(message: "password required ")]
+   #[Assert\Length(min: 8, minMessage: "password need to be atleast {{ limit }} ")]
    #[ORM\Column(name: "motdepasse", type: "string", length: 255, nullable: false)]
    private ?string $motdepasse = null;
 
+   #[Assert\NotBlank(message: "need a description")]
    #[ORM\Column(name: "description", type: "string", length: 255, nullable: false)]
    private ?string $description = null;
 
+   #[Assert\NotBlank(message: "type of the product required")]
    #[ORM\Column(name: "type", type: "string", length: 255, nullable: false)]
    private ?string $type = null;
 
+
+   #[Assert\NotBlank(message: "product image not found")]
    #[ORM\Column(name: "image", type: "string", length: 255, nullable: false)]
    private ?string $image = null;
 
