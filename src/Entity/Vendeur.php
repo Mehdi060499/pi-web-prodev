@@ -41,7 +41,7 @@ class Vendeur
    private ?string $type = null;
 
 
-   #[Assert\NotBlank(message: "product image not found")]
+
    #[ORM\Column(name: "image", type: "string", length: 255, nullable: false)]
    private ?string $image = null;
 

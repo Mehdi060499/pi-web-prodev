@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File as AssertFile;
 
 class VendeurFormType extends AbstractType
 {
@@ -19,7 +21,22 @@ class VendeurFormType extends AbstractType
             ->add('motdepasse')
             ->add('description')
             ->add('type')
-            ->add('image')
+            ->add('image', FileType::class, [
+                'label' => 'Preuve visuelle',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new AssertFile([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file (JPG, JPEG, PNG or GIF)',
+                    ])
+                ],
+            ])
         ;
     }
 

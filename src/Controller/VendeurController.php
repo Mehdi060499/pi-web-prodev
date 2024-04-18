@@ -25,6 +25,17 @@ class VendeurController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            if($image) // ajout image
+            {
+                $fileName = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move($this->getParameter('files_directory'), $fileName);
+                $vendeur->setImage($fileName);
+            } else {
+               
+                $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
+            }
+
             $entityManager->persist($vendeur);
             $entityManager->flush();
     
@@ -68,12 +79,14 @@ public function newStock(Request $request, VendeurRepository $vendeurRepository,
     }
 
     #[Route('/{id}', name: 'app_vendeur_delete', methods: ['POST'])]
-    public function delete($id, VendeurRepository $vendeurRepository, Request $request): Response
+    public function delete($id, VendeurRepository $vendeurRepository, StockRepository $StockRepository, Request $request): Response
     {
         $vendeur = $vendeurRepository->find($id);
+        $stock = $StockRepository->findOneBy(['Idvendeur' => $id]);
     
         if ($this->isCsrfTokenValid('delete'.$vendeur->getIdvendeur(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($stock);
             $entityManager->remove($vendeur);
             $entityManager->flush();
         }

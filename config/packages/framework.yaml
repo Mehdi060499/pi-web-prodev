@@ -16,9 +16,12 @@ framework:
     #fragments: true
     php_errors:
         log: true
-
+parameters:
+    files_directory: '%kernel.project_dir%/public/uploads'
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+
+            

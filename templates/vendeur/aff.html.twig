@@ -11,13 +11,14 @@
                             <div class="card-body">
                                 <h4 class="card-title">Show Vendeurs</h4>
                                  {% for vendeur in Vendeur %}
-                                 
+                    
                                 <div class="row">
-                                    <div class="col-lg-4 col-md-3"><img src="../assets/images/big/img1.jpg" class="img-fluid" /></div>
+                                    <div class="col-lg-4 col-md-3"><img src="{{ asset('uploads/' ~ vendeur.image) }}" class="img-fluid" /></div>
                                     <div class="col-lg-8 col-md-9" id="slimtest1" style="height: 250px;">
                                         <div>
                                         {% for stock in Stock %}
                                         {% if  stock.IdVendeur == vendeur %}
+                                        
                                         <h5 style="color: green;">This product is already added to the Database</h5>
                                         {% endif %}
                                          {% endfor %}
