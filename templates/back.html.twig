@@ -88,14 +88,14 @@
         <li class="nav-item"> <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="icon-menu"></i></a> </li>
         <!-- ============================================================== -->
         <!-- Search -->
-        <!-- ============================================================== -->
-           {% if app.request.attributes.get('allusers') == 'allusers' %}
+        <!-- =========================  {% if app.request.attributes.get('allusers') == 'allusers' %}=====  {% endif %}================================ -->
+          
         <li class="nav-item">
             <form id="search-form" class="app-search d-none d-md-block d-lg-block">
                 <input id="search-input" type="text" class="form-control" placeholder="Search & enter">
             </form>
         </li>
-        {% endif %}
+       
     </ul>
 
                     <!-- ============================================================== -->

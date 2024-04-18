@@ -6,9 +6,10 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints as AppAssert;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class Users
+class Users implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
@@ -25,10 +26,17 @@ class Users
     #[ORM\Column(name: "prenom", type: "string", length: 255, nullable: false)]
     private ?string $prenom ;
 
+    /**
+     * @var string The hashed password
+     */
     #[Assert\NotBlank(message: "Le mot de passe est requis")]
     #[Assert\Length(min: 8, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères")]
     #[ORM\Column(name: "motdepasse", type: "string", length: 255, nullable: false)]
     private ?string $motdepasse ;
+
+  
+  
+ 
 
     #[Assert\NotBlank(message: "L'adresse est requise")]
     #[Assert\Length(max: 255, maxMessage: "L'adresse ne peut pas dépasser {{ limit }} caractères")]
@@ -77,7 +85,7 @@ private ?int $role ;
         return $this;
     }
 
-    public function getMotdepasse(): ?string
+    public function getMotdepasse(): string
     {
         return $this->motdepasse;
     }
@@ -88,6 +96,45 @@ private ?int $role ;
 
         return $this;
     }
+
+      /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->motdepasse;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->motdepasse = $password;
+
+        return $this;
+    }
+    public function getRoles(): array
+    {
+        // Implémentez la logique pour récupérer les rôles de l'utilisateur
+        return ['ROLE_USER']; // Exemple de rôle par défaut
+    }
+
+    public function getSalt(): ?string
+    {
+        // Vous pouvez renvoyer un sel si nécessaire, sinon retournez null
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+        // Vous pouvez implémenter une logique pour effacer les données sensibles si nécessaire
+        // Cette méthode peut généralement rester vide
+    }
+    public function getUsername(): string
+    {
+        // Implémentez la logique pour récupérer l'identifiant unique de l'utilisateur
+        // Par exemple, vous pouvez renvoyer l'adresse e-mail de l'utilisateur
+        return $this->email; // Assurez-vous que $this->email correspond à l'identifiant unique de l'utilisateur
+    }
+
 
     public function getAdresse(): ?string
     {
@@ -124,4 +171,6 @@ private ?int $role ;
 
         return $this;
     }
+
+   
 }

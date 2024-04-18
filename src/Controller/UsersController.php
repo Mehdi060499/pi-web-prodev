@@ -17,9 +17,8 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\Persistence\ManagerRegistry;
-
-
-
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 
@@ -62,7 +61,7 @@ public function logout(Request $request): Response
 }
 
     #[Route('/signup', name: 'signup')]
-    public function signup(Request $request): Response
+    public function signup(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new Users();
     
@@ -70,21 +69,28 @@ public function logout(Request $request): Response
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+
+             // Hacher le mot de passe
+            $hashedPassword = $passwordEncoder->encodePassword($user, $user->getMotdepasse());
+            $user->setMotdepasse($hashedPassword);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
     
             // Redirection après inscription
-            // return $this->redirectToRoute('login');
+             return $this->redirectToRoute('allusers');
         }
     
         return $this->render('users/signup.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-    
+
+
+
     #[Route('/userfront', name: 'userfront')]
-    public function signup2(Request $request, UserRepository $userRepository): Response
+    public function signup2(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new Users();
         $user->setRole(1); // Définir le rôle par défaut à 1
@@ -93,7 +99,13 @@ public function logout(Request $request): Response
         $form2->handleRequest($request);
     
         if ($form2->isSubmitted() && $form2->isValid()) {
+            // Hacher le mot de passe
+            $hashedPassword = $passwordEncoder->encodePassword($user, $user->getMotdepasse());
+            $user->setMotdepasse($hashedPassword);
+            
+            // Ajouter l'utilisateur à la base de données
             $userRepository->add($user);
+            
             $this->addFlash('success', 'User registered successfully!');
             return $this->redirectToRoute('userfront2');
         }
@@ -104,49 +116,47 @@ public function logout(Request $request): Response
     }
 
 
-    #[Route('/userfront2', name: 'userfront2')]
-    public function userfront2(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository): Response
-    {
-        // Créer le formulaire de connexion
-        $form = $this->createForm(LoginFormType::class);
-        
-        // Récupérer les erreurs d'authentification
-        $error = $authenticationUtils->getLastAuthenticationError();
-        
-        // Gérer la soumission du formulaire
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $user = $userRepository->findOneBy(['email' => $formData['email']]);
-              $pw = $user->getmotdepasse();
-            // Vérifier les identifiants de connexion
-            if ($user && $pw == $formData['motdepasse']) {
-                // Créer la session de l'utilisateur
-                $session->set('user_id', $user->getIdclient());
 
-                
-                // Redirection en fonction du rôle de l'utilisateur
-                if ($user->getRole() === 0) {
-                    return new RedirectResponse($this->generateUrl('app_users'));
-                } elseif ($user->getRole() === 1) {
-                    return new RedirectResponse($this->generateUrl('profile'));
-                } elseif ($user->getRole() === 2) {
-                    $errorMessage = "L'utilisateur est bloqué.";
-                    return $this->render('error.html.twig', ['message' => $errorMessage]);
-                }
-            } else {
-                $error = 'Invalid credentials';
+   #[Route('/userfront2', name: 'userfront2')]
+public function userfront2(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+{
+    // Créer le formulaire de connexion
+    $form = $this->createForm(LoginFormType::class);
+    
+    // Récupérer les erreurs d'authentification
+    $error = $authenticationUtils->getLastAuthenticationError();
+    
+    // Gérer la soumission du formulaire
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $formData = $form->getData();
+        $user = $userRepository->findOneBy(['email' => $formData['email']]);
+        
+        // Vérifier si l'utilisateur existe et si le mot de passe est correct
+        if ($user && $passwordEncoder->isPasswordValid($user, $formData['motdepasse'])) {
+            // Créer la session de l'utilisateur
+            $session->set('user_id', $user->getIdclient());
+
+            // Redirection en fonction du rôle de l'utilisateur
+            if ($user->getRole() === 0) {
+                return new RedirectResponse($this->generateUrl('app_users'));
+            } elseif ($user->getRole() === 1) {
+                return new RedirectResponse($this->generateUrl('profile'));
+            } elseif ($user->getRole() === 2) {
+                $errorMessage = "L'utilisateur est bloqué.";
+                return $this->render('error.html.twig', ['message' => $errorMessage]);
             }
+        } else {
+            $error = 'Invalid credentials';
         }
-        
-        // Rendre la vue du formulaire de connexion
-        return $this->render('users/userfront2.html.twig', [
-            'loginForm' => $form->createView(),
-            'error' => $error,
-        ]);
-        
-        
     }
+    
+    // Rendre la vue du formulaire de connexion
+    return $this->render('users/userfront2.html.twig', [
+        'loginForm' => $form->createView(),
+        'error' => $error,
+    ]);
+}
     
     
     

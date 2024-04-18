@@ -1,7 +1,5 @@
 <?php
 
-// src/Validator/Constraints/UniqueEmail.php
-
 namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
