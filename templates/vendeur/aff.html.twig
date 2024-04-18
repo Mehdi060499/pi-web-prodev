@@ -27,9 +27,10 @@
                                              <p>{{vendeur.motdepasse}} </p>
                                              <p>{{vendeur.description}} </p>
                                              <p>{{vendeur.type}} </p>
-                                              <p> <a href="{{ path('app_update', {'id': vendeur.IdVendeur}) }}">edit</a></p> 
-                                             <p>{{ include('vendeur/delete.html.twig') }} </p>
-                                             <p> <a href="{{ path('app_stock_new', {'vendeurId': vendeur.IdVendeur}) }}">insert to Stock</a></p> 
+                                             <a class="btn btn-primary" href="{{ path('app_update', {'id': vendeur.IdVendeur}) }}" role="button">edite</a> 
+                                             <a class="btn">{{ include('vendeur/delete.html.twig') }} </a>
+                                             <a class="btn btn-primary" href="{{ path('app_stock_new', {'vendeurId': vendeur.IdVendeur}) }}" role="button">insert into stock</a>
+                                           
 
 
                                         </div>
