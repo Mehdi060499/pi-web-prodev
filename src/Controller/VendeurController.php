@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class VendeurController extends AbstractController
 {
-    #[Route('/newv', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
+    #[Route('/inscription', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
     public function newVendeur(Request $request, EntityManagerInterface $entityManager): Response
     {
         $vendeur = new Vendeur();
@@ -28,7 +28,7 @@ class VendeurController extends AbstractController
             $entityManager->persist($vendeur);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_stock_new', ['vendeurId' => $vendeur->getIdvendeur()]);
+            return $this->redirectToRoute('app_vendeur', ['vendeurId' => $vendeur->getIdvendeur()]);
         }
     
         return $this->render('vendeur/inscription.html.twig', [
@@ -63,7 +63,7 @@ public function newStock(Request $request, VendeurRepository $vendeurRepository,
     {
         return $this->render('vendeur/aff.html.twig', [
             'Vendeur' => $VendeurRepository->findAll(),
-            'stock' => $StockRepository->findAll()
+            'Stock' => $StockRepository->findAll()
         ]);
     }
 

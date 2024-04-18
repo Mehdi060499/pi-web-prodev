@@ -17,21 +17,29 @@
 
           
 <div class="form-group">
-    <label for="vendeur_product_image">Quantite</label>
-    {{ form_widget(form2.quantite, {'attr': {'class': 'form-control', 'placeholder': 'Enter image'}}) }}
+    <label for="vendeur_product_quantite">Quantite</label>
+    {{ form_widget(form2.quantite, {'attr': {'class': 'form-control', 'placeholder': 'Enter quantite number'}}) }}
     {{ form_errors(form2.quantite) }}
 </div>
 
 <div class="form-group">
-    <label for="vendeur_product_image">PrixUnite</label>
-    {{ form_widget(form2.prix_unite, {'attr': {'class': 'form-control', 'placeholder': 'Enter image'}}) }}
+    <label for="vendeur_product_prixunite">PrixUnite</label>
+    {{ form_widget(form2.prix_unite, {'attr': {'class': 'form-control', 'placeholder': 'Enter unit price'}}) }}
     {{ form_errors(form2.prix_unite) }}
+</div>
+
+<div class="form-group">
+    <label for="vendeur_product_productname">product name</label>
+    {{ form_widget(form2.nomproduit, {'attr': {'class': 'form-control', 'placeholder': 'Enter product name'}}) }}
+    {{ form_errors(form2.nomproduit) }}
 </div>
 
 <div class="form-group form-button">
     {{ form_row(form2) }}
     
-    <button type="submit" class="btn btn-dark">Signup</button>
+    <button type="submit" class="btn btn-dark">Add to stock</button>
+    <a href="{{ path('app_vendeur') }}" class="btn btn-dark">Annuler</a>
+
 </div>
 {{ form_end(form2) }}
     {% for message in app.flashes('error') %}
