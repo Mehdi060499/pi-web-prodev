@@ -1,0 +1,55 @@
+# routes.yaml
+app_articles:
+    path: /articles
+    controller: App\Controller\ArticlesController::index
+    methods: ['GET']
+
+article_ajouter:
+    path: /articles/ajouter
+    controller: App\Controller\ArticlesController::ajouter
+    methods: ['GET','POST']
+
+article_modifier:
+    path: /articles/{id}/modifier
+    controller: App\Controller\ArticlesController::modifier
+    methods: ['GET', 'POST']
+
+article_supprimer:
+    path: /articles/{id}/supprimer
+    controller: App\Controller\ArticlesController::supprimer
+    methods: ['POST']
+
+articles_show:
+    path: /articles/show
+    controller: App\Controller\ArticlesController::getOneByNom
+    methods: ['GET']
+
+articles_shop:
+    path: /articles/shop
+    controller: App\Controller\ArticlesController::paginateArticles
+    methods: ['GET']
+
+supprimer_article_panier:
+    path: /articles/{id}/delete
+    controller: App\Controller\ArticlesController::deleteFromCart
+    methods: ['DELETE']
+
+ajouter_panier:
+    path: /articles/{id}/cart
+    controller: App\Controller\ArticlesController::addToCart
+    methods: ['GET']
+
+panier:
+    path: /articles/cart
+    controller: App\Controller\ArticlesController::cart
+    methods: ['GET']
+
+ajouter_wishlist:
+    path: /articles/{id}/Wishlist
+    controller: App\Controller\ArticlesController::addToWishlist
+    methods: ['GET']
+
+wishlist:
+    path: /articles/Wishlist
+    controller: App\Controller\ArticlesController::wishlist
+    methods: ['GET']
