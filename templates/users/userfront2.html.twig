@@ -9,7 +9,7 @@ TOUNSI LL TOUNSI
     <div class="form-box">
         <div class="login-container" id="login">
             <div class="top">
-                <span>Don't have an account? <a href="#" onclick="register()">Sign Up</a></span>
+                <span>Don't have an account? <a href="{{ path ('userfront')}}" onclick="register()">Sign Up</a></span>
                 <header>Login</header>
             </div>
             {{ form_start(loginForm) }}

@@ -50,15 +50,7 @@ class UsersController extends AbstractController
         
     }
 
-    #[Route('/logout', name: 'logout',methods: ['GET', 'POST'])]
-public function logout(Request $request): Response
-{
-    // Invalidate the session
-    $request->getSession()->invalidate();
-
-    // Redirect to the login page or any other page after logout
-    return $this->redirectToRoute('userfront2');
-}
+ 
 
     #[Route('/signup', name: 'signup')]
     public function signup(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
@@ -147,7 +139,7 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
                 return $this->render('error.html.twig', ['message' => $errorMessage]);
             }
         } else {
-            $error = 'Invalid credentials';
+            $error = 'Mot de passe incorrect';
         }
     }
     
@@ -173,6 +165,13 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
             'users' => $users,
             'user2'=>$user2,
         ]);
+    }
+
+
+    #[Route('/updateadmin', name: 'updateadmin')]
+    public function updateadmin(): Response
+    {
+        return $this->render('users/updateadmin.html.twig');
     }
 
 
@@ -203,26 +202,34 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     }
 
     #[Route('/{id}/edit', name: 'update', methods: ['GET', 'POST'])]
-    public function edit($id,Request $request, UserRepository $userRepository,ManagerRegistry $manager): Response
+    public function edit($id, Request $request, UserRepository $userRepository, ManagerRegistry $manager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = $userRepository->find($id);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
+        $newPassword = $form->get('motdepasse')->getData();
+        if ($newPassword !== null) {
+            // Hacher le nouveau mot de passe
+            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setMotdepasse($hashedPassword);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
+            // Vérifier si un nouveau mot de passe a été fourni
+           
+    
             $em = $manager->getManager();
             $em->persist($user);
             $em->flush();
-
+    
             return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('users/update.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_users_delete2', methods: ['POST'])]
     public function delete2($id, UserRepository $userRepository, Request $request): Response
     {
@@ -235,6 +242,18 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
         }
     
         return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+    #[Route('/logout', name: 'logout',methods: ['GET', 'POST'])]
+    public function logout(Request $request): Response
+    {
+        // Invalidate the session
+        $request->getSession()->invalidate();
+    
+        // Redirect to the login page or any other page after logout
+        return $this->redirectToRoute('userfront2');
     }
 
 

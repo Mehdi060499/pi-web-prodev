@@ -14,6 +14,8 @@
     <!-- This page CSS -->
     <!-- chartist CSS -->
     {% block style %}
+      <link href="../assets/node_modules/wizard/steps.css" rel="stylesheet">
+       <link href="../assets/node_modules/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="../assets/node_modules/morrisjs/morris.css" rel="stylesheet">
     <!--Toaster Popup message CSS -->
     <link href="../assets/node_modules/toast-master/css/jquery.toast.css" rel="stylesheet">
@@ -353,6 +355,7 @@
                                 <li><a href="{{ path ('signup')}}">Add </a></li>
                                 <li><a href="{{ path ('Delete')}}">Delete</a></li>
                                 <li><a href="{{ path ('allusers')}}">All Users</a></li>
+       
                                 <li><a href="{{ path ('logout')}}">logout</a></li>
                             </ul>
                         </li>
@@ -542,8 +545,7 @@
     <!-- ============================================================== -->
     <!-- This page plugins -->
     <!-- ============================================================== -->
-    <!--morris JavaScript -->
- 
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var searchInput = document.getElementById('search-input');
