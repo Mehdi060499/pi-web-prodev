@@ -229,6 +229,36 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
             'form' => $form,
         ]);
     }
+
+    #[Route('/{id}/editt', name: 'update2', methods: ['GET', 'POST'])]
+    public function edit2($id, Request $request, UserRepository $userRepository, ManagerRegistry $manager, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        $user = $userRepository->find($id);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+        $newPassword = $form->get('motdepasse')->getData();
+        if ($newPassword !== null) {
+            // Hacher le nouveau mot de passe
+            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setMotdepasse($hashedPassword);
+        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Vérifier si un nouveau mot de passe a été fourni
+           
+    
+            $em = $manager->getManager();
+            $em->persist($user);
+            $em->flush();
+    
+            return $this->redirectToRoute('profile', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->renderForm('users/UpdateFront.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+    
     
     #[Route('/{id}', name: 'app_users_delete2', methods: ['POST'])]
     public function delete2($id, UserRepository $userRepository, Request $request): Response
