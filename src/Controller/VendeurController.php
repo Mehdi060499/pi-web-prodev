@@ -12,6 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Stock;
 use App\Form\StockType;
+use App\Form\LoginVType;
+use App\Form\LLoginType;
 use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -19,6 +21,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\FormFactoryInterface;
+
+
 
 class VendeurController extends AbstractController
 {
@@ -54,8 +60,8 @@ class VendeurController extends AbstractController
     }
 
    #[Route('/news/{vendeurId}', name: 'app_stock_new', methods: ['GET', 'POST'])]
-public function newStock(Request $request, VendeurRepository $vendeurRepository, $vendeurId , EntityManagerInterface $entityManager): Response
-{
+    public function newStock(Request $request, VendeurRepository $vendeurRepository, $vendeurId , EntityManagerInterface $entityManager): Response
+    {
     $vendeur = $vendeurRepository->findOneBy(['idvendeur' => $vendeurId]);
     $stock = new Stock();
     $form = $this->createForm(StockType::class, $stock);
@@ -72,7 +78,7 @@ public function newStock(Request $request, VendeurRepository $vendeurRepository,
     return $this->render('vendeur/news.html.twig', [
         'form2' => $form->createView(),
     ]);
-}
+    }
 
 
     #[Route('/aff', name: 'app_vendeur', methods: ['GET'])]
@@ -90,7 +96,7 @@ public function newStock(Request $request, VendeurRepository $vendeurRepository,
         $vendeur = $vendeurRepository->find($id);
         $stock = $StockRepository->findOneBy(['Idvendeur' => $id]);
     
-        if ($this->isCsrfTokenValid('delete'.$vendeur->getIdvendeur(), $request->request->get('_token'))) {
+        if ($vendeur) {
             if($stock){
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($stock);
@@ -137,38 +143,48 @@ public function newStock(Request $request, VendeurRepository $vendeurRepository,
         ]);
     }
 
+    #[Route('/logout', name: 'logout2',methods: ['GET', 'POST'])]
+public function logout(Request $request): Response
+{
+    // Invalidate the session
+    $request->getSession()->invalidate();
 
-    #[Route('/loginv', name: 'loginv')]
-    public function userfront2(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, VendeurRepository $vendeurRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+    // Redirect to the login page or any other page after logout
+    return $this->redirectToRoute('loginv');
+}
+
+#[Route('/signupp', name: 'signupp', methods: ['GET', 'POST'])]
+    public function newVendeurr(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        // Créer le formulaire de connexion
-        $form = $this->createForm(LoginVType::class);
-        
-        // Récupérer les erreurs d'authentification
-        $error = $authenticationUtils->getLastAuthenticationError();
-        
-        // Gérer la soumission du formulaire
+        $vendeur = new Vendeur();
+        $form = $this->createForm(VendeurFormType::class, $vendeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $veneur = $vendeurRepository->findOneBy(['email' => $formData['email']]);
-            
-            // Vérifier si l'utilisateur existe et si le mot de passe est correct
-            if ($vendeur && $passwordEncoder->isPasswordValid($vendeur, $formData['motdepasse'])) {
-                // Créer la session de l'utilisateur
-                $session->set('vendeur_id', $vendeur->getIdvendeur());
-    
-                    return new RedirectResponse($this->generateUrl('app_vendeur'));
-
+            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+            $vendeur->setMotdepasse($hashedPassword);
+            $image = $form->get('image')->getData();
+            if($image) // ajout image
+            {
+                $fileName = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move($this->getParameter('files_directory'), $fileName);
+                $vendeur->setImage($fileName);
             } else {
-                $error = 'Mot de passe incorrect';
+               
+                $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
             }
-        }
-           // Rendre la vue du formulaire de connexion
-    return $this->render('vendeur/login.html.twig', [
-        'loginForm' => $form->createView(),
-        'error' => $error,
-    ]);
-}
-}
 
+            $entityManager->persist($vendeur);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_vendeur', ['vendeurId' => $vendeur->getIdvendeur()]);
+        }
+    
+        return $this->render('vendeur/signup.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+ 
+
+}

@@ -1,0 +1,56 @@
+{% extends 'front2.html.twig' %}
+
+{% block title %}
+TOUNSI LL TOUNSI    
+{% endblock %}
+
+{% block ktiba3 %}
+<!-- Row -->
+<div class="row justify-content-center">
+    <!-- Column -->
+    <div class="col-lg-4 col-xlg-3 col-md-5 mx-auto">
+        <div class="card">
+            <div class="card-body text-center">
+</br></br></br>
+</br></br></br>
+</br>
+
+      <center class="m-t-30"> <img src="{{ asset('uploads/' ~ vendeur.image) }}" class="img-circle" width="150" />
+                        
+                                
+                                </center>
+<br>
+   
+     <h6 class="card-subtitle">Your Account :</h6>
+                <h4 class="card-title m-t-10">{{ vendeur.nom }} </h4>
+            </div>
+            <div>
+                <hr>
+            </div>
+            <div class="card-body text-center">
+                <small class="text-muted">Email address </small>
+                <h6>{{ vendeur.email }}</h6>
+                <small class="text-muted">product name </small>
+                <h6>{{ vendeur.nomproduit }}</h6>
+                <small class="text-muted">description </small>
+                <h6>{{ vendeur.description }}</h6>
+                <small class="text-muted">type de product </small>
+                <h6>{{ vendeur.type }}</h6>
+                
+             
+             
+                <div class="map-box">
+                    <!-- Google Map Here -->
+                </div>
+                </br>
+                <small class="text-muted p-t-30 db">Social Profile</small>
+                <br>
+                        
+                <a href="https://www.facebook.com/?locale=fr_FR" class="btn btn-circle btn-secondary"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+</div>
+<!-- Row -->
+{% endblock %}

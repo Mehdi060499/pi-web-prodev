@@ -5,11 +5,13 @@ TOUNSI LL TOUNSI
 {% endblock %}
 
 {% block ktiba2 %}
-<div class="wrapper">
+    <h1>Connexion</h1>
+   
+    <div class="wrapper">
     <div class="form-box">
         <div class="login-container" id="login">
             <div class="top">
-                <span>Don't have an account? <a href="{{ path ('app_vendeur')}}" onclick="register()">Sign Up</a></span>
+                <span>Don't have an account? <a href="{{ path ('userfront')}}" onclick="register()">Sign Up</a></span>
                 <header>Login</header>
             </div>
             {{ form_start(loginForm) }}
@@ -18,11 +20,11 @@ TOUNSI LL TOUNSI
                 <i class="bx bx-user"></i>
             </div>
             <div class="input-box">
-                {{ form_row(loginForm.motdepasse, {'attr': {'class': 'input-field', 'placeholder': 'Password'}}) }}
+                  {{ form_row(loginForm.motdepasse, {'attr': {'class': 'input-field', 'placeholder': 'Password'}}) }}
                 <i class="bx bx-lock-alt"></i>
             </div>
             <div class="input-box">
-                {{ form_row(loginForm.submit, {'attr': {'class': 'submit', 'value': 'Sign In'}}) }}
+        <button type="submit" class="btn btn-primary">Se connecter</button>
             </div>
             {{ form_end(loginForm) }}
             <div class="two-col">

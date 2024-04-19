@@ -1,0 +1,61 @@
+{% extends 'front.html.twig' %}
+{% block title %}
+TOUNSI LL TOUNSI    
+{% endblock %}
+
+{% block ktiba2 %}
+<div class="wrapper">
+    <div class="form-box">
+        <form method="post">
+            {{ form_start(form) }}
+            <div class="two-forms">
+                <div class="input-box">
+                    {{ form_row(form.nom, {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.nom) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                 <div class="input-box">
+                    {{ form_row(form.nomproduit, {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.nomproduit) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                 <div class="input-box">
+                    {{ form_row(form.email, {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.email) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                 <div class="input-box">
+                    {{ form_row(form.motdepasse , {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.motdepasse) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                  <div class="input-box">
+                    {{ form_row(form.description , {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.description) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                  <div class="input-box">
+                    {{ form_row(form.type , {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form.type) }}
+                    <i class="bx bx-user"></i>
+                </div>
+
+
+            </div>
+            <div class="input-box">
+                <input type="submit" class="submit" value="Register">
+            </div>
+            <div class="two-col">
+                <div class="one">
+                    <input type="checkbox" id="register-check">
+                    <label for="register-check"> Remember Me</label>
+                </div>
+                <div class="two">
+                    <label><a href="#">Terms et conditions</a></label>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </form>
+    </div>
+</div>
+{% endblock %}

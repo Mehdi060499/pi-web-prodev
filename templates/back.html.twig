@@ -87,11 +87,11 @@
                         <!-- ============================================================== -->
                         <!-- Search -->
                         <!-- ============================================================== -->
-                        <li class="nav-item">
-                            <form class="app-search d-none d-md-block d-lg-block">
-                                <input type="text" class="form-control" placeholder="Search & enter">
-                            </form>
-                        </li>
+                         <li class="nav-item">
+            <form id="search-form" class="app-search d-none d-md-block d-lg-block">
+                <input id="search-input" type="text" class="form-control" placeholder="Search & enter">
+            </form>
+        </li>
                     </ul>
                     <!-- ============================================================== -->
                     <!-- User profile and search -->
@@ -337,7 +337,7 @@
                                 <!-- text-->
                                 <div class="dropdown-divider"></div>
                                 <!-- text-->
-                                <a href="pages-login.html" class="dropdown-item"><i class="fas fa-power-off"></i> Logout</a>
+                                 <a href="{{ path ('logout2')}}" class="dropdown-item"><i class="fas fa-power-off"></i> Logout</a>
                                 <!-- text-->
                             </div>
                         </div>
@@ -360,10 +360,9 @@
                         <li class="nav-small-cap">--- Fournisseur</li>
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-truck"></i><span class="hide-menu">Fournisseur</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="aff">all vendeur</a></li>
-                                <li><a href="inscription">vendeur inscription</a></li>
-                                <li><a href="form-addons.html">Form Addons</a></li>
-                                <li><a href="form-material.html">Form Material</a></li>
+                                <li><a href="{{ path ('app_vendeur')}}">all vendeur</a></li>
+                                <li><a href="{{ path ('app_vendeur_inscription')}}">vendeur inscription</a></li>
+                   
                      
                             </ul>
                         </li>
@@ -392,7 +391,7 @@
                   
              <li class="nav-small-cap">--- SUPPORT</li>
                         <li>
-                            <a class="waves-effect waves-dark" href="pages-login.html" aria-expanded="false">
+                            <a class="waves-effect waves-dark" href="{{ path ('logout2')}}" aria-expanded="false">
                                 <i class="far fa-circle text-danger"></i>
                                 <span class="hide-menu">Log Out</span>
                             </a>
@@ -545,7 +544,36 @@
     <!-- ============================================================== -->
     <!--morris JavaScript -->
  
- 
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('search-input');
+        var userTable = document.getElementById('user-table');
+
+        searchInput.addEventListener('input', function() {
+            var searchTerm = searchInput.value.toLowerCase();
+            var rows = userTable.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var found = false;
+
+                for (var j = 0; j < cells.length; j++) {
+                    var cellText = cells[j].textContent.toLowerCase();
+                    if (cellText.indexOf(searchTerm) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    });
+</script>
 </body>
 
 </html>
