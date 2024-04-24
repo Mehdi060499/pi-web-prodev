@@ -14,6 +14,7 @@ class Vendeur implements UserInterface
     #[ORM\Column(name: "IdVendeur", type: "integer", nullable: false)]
    private ?int $idvendeur =  null;
 
+   
    #[Assert\NotBlank(message: "Nom Required")]
    #[ORM\Column(name: "nom", type: "string", length: 255, nullable: false)]
    private ?string $nom = null;
