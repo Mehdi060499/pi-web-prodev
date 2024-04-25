@@ -1,11 +1,14 @@
 {% extends 'front2.html.twig' %}
 
 {% block title %}
-TOUNSI LL TOUNSI    
+TOUNSI LL TOUNSI   
 {% endblock %}
 
 {% block ktiba3 %}
 <!-- Row -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script> 
+
 <div class="row justify-content-center">
     <!-- Column -->
     <div class="col-lg-4 col-xlg-3 col-md-5 mx-auto">
@@ -39,18 +42,35 @@ TOUNSI LL TOUNSI
                 
              
              
-                <div class="map-box">
-                    <!-- Google Map Here -->
-                </div>
-                </br>
-                <small class="text-muted p-t-30 db">Social Profile</small>
-                <br>
-                        
+               
                 <a href="https://www.facebook.com/?locale=fr_FR" class="btn btn-circle btn-secondary"><i class="fab fa-facebook-f"></i></a>
             </div>
         </div>
     </div>
     <!-- Column -->
 </div>
+ <div class="map-box">
+                    <!-- Google Map Here -->
+                </div>
+                </br>
+                <small class="text-muted p-t-30 db">Social Profile</small>
+                <br>
+                        <div id="map" style="width: 50%; height: 50vh;"></div>
+  <script>
+    // Set the latitude and longitude obtained previously
+    const latitude = {{ latitude }};
+    const longitude = {{ longitude }};
+
+    // Initialize the map
+    const map = L.map('map').setView([latitude, longitude], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a marker to the map
+    L.marker([latitude, longitude]).addTo(map);
+  </script>
 <!-- Row -->
 {% endblock %}

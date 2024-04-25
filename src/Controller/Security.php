@@ -11,6 +11,7 @@ use App\Repository\VendeurRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Stock;
+use App\Entity\Logins;
 use App\Form\StockType;
 use App\Form\LoginVType;
 use App\Form\LLoginType;
@@ -23,7 +24,8 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\FormFactoryInterface;
-
+use Symfony\Component\HttpClient\HttpClient;
+use GuzzleHttp\Client;
 
 
 class Security extends AbstractController
@@ -62,7 +64,7 @@ class Security extends AbstractController
 
 
     #[Route('/loginv', name: 'loginv')]
-    public function loginvendeur(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, VendeurRepository $vendeurRepository, UserPasswordEncoderInterface $passwordEncoder,FormFactoryInterface $formFactory): Response
+    public function loginvendeur(Request $request, EntityManagerInterface $entityManager , AuthenticationUtils $authenticationUtils, SessionInterface $session, VendeurRepository $vendeurRepository, UserPasswordEncoderInterface $passwordEncoder,FormFactoryInterface $formFactory): Response
     {
         // Créer le formulaire de connexion
         // Créer le formulaire de connexion
@@ -79,11 +81,22 @@ $form->handleRequest($request);
 if ($form->isSubmitted() && $form->isValid()) {
     $formData = $form->getData();
     $vendeur = $vendeurRepository->findOneBy(['email' => $formData['email']]);
+    $ipaddress = '';
+    $login = new Logins();
     
+
     // Vérifier si l'utilisateur existe et si le mot de passe est correct
     if ($vendeur && $passwordEncoder->isPasswordValid($vendeur, $formData['motdepasse'])) {
         // Créer la session de l'utilisateur
         $session->set('vendeur_id', $vendeur->getIdvendeur());
+        $login->setIdvendeur($vendeur);
+        $client = HttpClient::create();
+    $response = $client->request('GET', 'http://ipinfo.io/json');
+    $data = json_decode($response->getContent(), true);
+    $ipaddress = $data['ip'];
+       $login->setIp($ipaddress); 
+       $entityManager->persist($login);
+       $entityManager->flush();
 
         // Redirection en fonction du rôle de l'utilisateur
         // Modifier cette logique selon les besoins
@@ -98,6 +111,7 @@ if ($form->isSubmitted() && $form->isValid()) {
            // Rendre la vue du formulaire de connexion
     return $this->render('vendeur/Login.html.twig', [
         'loginForm' => $form->createView(),
+
         'error' => $error,
     ]);
 }
@@ -107,9 +121,21 @@ public function profile(Request $request,SessionInterface $session,VendeurReposi
 {    // Get the user_id from the session
     $vendeurid = $request->getSession()->get('vendeur_id');
 
+    $client = new Client();
+
+    $response = $client->get('https://api.ipdata.co?api-key=0b08ab039b22495c86a2be18bafa18896f52c25920bb53aa3267b834');
+    
+    $data = json_decode($response->getBody(), true);
+    
+    $ipAddress = $data['ip'];
+    $latitude = $data['latitude'];
+    $longitude = $data['longitude'];
+
     // Fetch the user data using the user_id
     $vendeur = $vendeurRepository->find($vendeurid);
     return $this->render('vendeur/Profilfront.html.twig', [
+        'latitude' => $latitude,
+        'longitude' => $longitude,
         'vendeur' => $vendeur,]);
    
     

@@ -1,4 +1,3 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
@@ -16,6 +15,9 @@ framework:
     #fragments: true
     php_errors:
         log: true
+
+    trusted_proxies: '127.0.0.1' # Replace with your proxy or load balancer IP address
+
 parameters:
     files_directory: '%kernel.project_dir%/public/uploads'
 when@test:
@@ -23,5 +25,3 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
-
-            
