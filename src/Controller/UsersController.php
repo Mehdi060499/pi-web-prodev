@@ -24,9 +24,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
-
-
 class UsersController extends AbstractController
 {
   
