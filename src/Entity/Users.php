@@ -43,7 +43,7 @@ class Users implements UserInterface
     #[ORM\Column(name: "adresse", type: "string", length: 255, nullable: false)]
     private ?string $adresse ;
 
-    #[AppAssert\UniqueEmail]
+    
     #[Assert\NotBlank(message: "L'email est requis")]
     #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide.")]
     #[ORM\Column(name: "email", type: "string", length: 255, nullable: false)]

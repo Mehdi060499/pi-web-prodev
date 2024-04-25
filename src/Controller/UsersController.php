@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Form\UserFType;
 use App\Form\DeleteType;
 use App\Form\LoginFormType;
+use App\Form\UserForgotPasswordType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 
 
@@ -89,12 +94,15 @@ class UsersController extends AbstractController
         
         $form2 = $this->createForm(UserFType::class, $user);
         $form2->handleRequest($request);
-    
+       // $pwd=user->get
         if ($form2->isSubmitted() && $form2->isValid()) {
             // Hacher le mot de passe
             $hashedPassword = $passwordEncoder->encodePassword($user, $user->getMotdepasse());
             $user->setMotdepasse($hashedPassword);
-            
+             $nomUtilisateur = $user->getNom();
+            $emailUtilisateur = $user->getEmail();
+            $message = "Bonjour $nomUtilisateur, votre compte $emailUtilisateur a été créé avec succès .";
+           // $userRepository->sms('+21693323188', $message);
             // Ajouter l'utilisateur à la base de données
             $userRepository->add($user);
             
@@ -258,6 +266,50 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
             'form' => $form,
         ]);
     }
+
+
+    #[Route('/Forgotpassword', name: 'Forgotpassword', methods: ['GET', 'POST'])]
+    public function forgotPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
+    {
+        $form = $this->createForm(UserForgotPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('email')->getData();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $user = $entityManager->getRepository(UserRepository::class)->findOneBy(['email' => $email]);
+
+            if (!$user) {
+                $this->addFlash('error', 'Aucun utilisateur trouvé avec cet email.');
+                return $this->redirectToRoute('Forgotpassword');
+            }
+
+            // Générer un nouveau mot de passe
+            $newPassword = bin2hex(random_bytes(8));
+            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setPassword($hashedPassword);
+
+            $entityManager->flush();
+
+            // Envoyer un email à l'utilisateur avec le nouveau mot de passe
+            $emailMessage = (new Email())
+                ->from('mehdikallel9@gmail.com')
+                ->to($user->getEmail())
+                ->subject('Réinitialisation du mot de passe')
+                ->text('Votre nouveau mot de passe est : ' . $newPassword);
+
+            $mailer->send($emailMessage);
+
+            $this->addFlash('success', 'Un email contenant le nouveau mot de passe a été envoyé à votre adresse email.');
+            return $this->redirectToRoute('userfront2');
+        }
+
+        return $this->render('users/Forgotpassword.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     
     
     #[Route('/{id}', name: 'app_users_delete2', methods: ['POST'])]
