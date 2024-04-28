@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Form;
 
-use App\Entity\Users;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class UserForgotPasswordType extends AbstractType
 {
@@ -13,15 +13,14 @@ class UserForgotPasswordType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'attr' => ['placeholder' => 'Votre email']
+                'label' => 'Adresse e-mail'
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Users::class,
+            // Configure your form options here
         ]);
     }
 }

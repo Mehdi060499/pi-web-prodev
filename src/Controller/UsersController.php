@@ -265,65 +265,7 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     }
 
 
-    #[Route('/Forgotpassword', name: 'Forgotpassword', methods: ['GET', 'POST'])]
-    public function forgotPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
-    {
-        $form = $this->createForm(UserForgotPasswordType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $email = $form->get('email')->getData();
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $user = $entityManager->getRepository(UserRepository::class)->findOneBy(['email' => $email]);
-
-            if (!$user) {
-                $this->addFlash('error', 'Aucun utilisateur trouvé avec cet email.');
-                return $this->redirectToRoute('Forgotpassword');
-            }
-
-            // Générer un nouveau mot de passe
-            $newPassword = bin2hex(random_bytes(8));
-            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
-            $user->setPassword($hashedPassword);
-
-            $entityManager->flush();
-
-            // Envoyer un email à l'utilisateur avec le nouveau mot de passe
-            $emailMessage = (new Email())
-                ->from('mehdikallel9@gmail.com')
-                ->to($user->getEmail())
-                ->subject('Réinitialisation du mot de passe')
-                ->text('Votre nouveau mot de passe est : ' . $newPassword);
-
-            $mailer->send($emailMessage);
-
-            $this->addFlash('success', 'Un email contenant le nouveau mot de passe a été envoyé à votre adresse email.');
-            return $this->redirectToRoute('userfront2');
-        }
-
-        return $this->render('users/Forgotpassword.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
     
-    
-    #[Route('/{id}', name: 'app_users_delete2', methods: ['POST'])]
-    public function delete2($id, UserRepository $userRepository, Request $request): Response
-    {
-        $users = $userRepository->find($id);
-    
-        if ($this->isCsrfTokenValid('delete'.$users->getidclient(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($users);
-            $entityManager->flush();
-        }
-    
-        return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
-    }
-
-
 
     #[Route('/logout', name: 'logout',methods: ['GET', 'POST'])]
     public function logout(Request $request): Response
@@ -335,5 +277,9 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
         return $this->redirectToRoute('userfront2');
     }
 
+   
+
+
 
 }
+
