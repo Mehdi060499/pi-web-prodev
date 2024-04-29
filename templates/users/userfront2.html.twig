@@ -12,11 +12,18 @@ TOUNSI LL TOUNSI
                 <span>Don't have an account? <a href="{{ path ('userfront')}}" onclick="register()">Sign Up</a></span>
                 <header>Login</header>
             </div>
-            {% if error %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endif %}
+          {% if error %}
+    {% if errorType == "blocked" %}
+        <div class="alert alert-warning" role="alert">
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+{% endif %}
+
             {{ form_start(loginForm) }}
             <div class="input-box">
                 {{ form_row(loginForm.email, {'attr': {'class': 'input-field', 'placeholder': 'Email'}}) }}

@@ -141,8 +141,10 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
                 return new RedirectResponse($this->generateUrl('profile'));
             } elseif ($user->getRole() === 2) {
                 $errorMessage = "L'utilisateur est bloqué.";
-                return $this->render('error.html.twig', ['message' => $errorMessage]);
+                $errorType = "blocked";
             }
+            
+            
         } else {
             $error = 'Mot de passe incorrect';
         }
@@ -152,6 +154,7 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     return $this->render('users/userfront2.html.twig', [
         'loginForm' => $form->createView(),
         'error' => $error,
+        'errorType' => $errorType,
     ]);
 }
     
