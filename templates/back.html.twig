@@ -544,36 +544,7 @@
     <!-- ============================================================== -->
     <!--morris JavaScript -->
  
- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var searchInput = document.getElementById('search-input');
-        var userTable = document.getElementById('user-table');
-
-        searchInput.addEventListener('input', function() {
-            var searchTerm = searchInput.value.toLowerCase();
-            var rows = userTable.getElementsByTagName('tr');
-
-            for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName('td');
-                var found = false;
-
-                for (var j = 0; j < cells.length; j++) {
-                    var cellText = cells[j].textContent.toLowerCase();
-                    if (cellText.indexOf(searchTerm) > -1) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
-            }
-        });
-    });
-</script>
+ 
 </body>
 
 </html>
