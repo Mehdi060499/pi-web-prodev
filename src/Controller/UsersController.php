@@ -206,6 +206,24 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
         ]);
     }
 
+    #[Route('/{id}', name: 'app_users_delete', methods: ['POST'])]
+    public function delete2($id, UserRepository $userRepository, Request $request): Response
+    {
+        $users = $userRepository->find($id);
+       
+    
+        if ($users) {
+           
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($users);
+            $entityManager->flush();
+        }
+    
+        return $this->redirectToRoute('allusers', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
     #[Route('/{id}/edit', name: 'update', methods: ['GET', 'POST'])]
     public function edit($id, Request $request, UserRepository $userRepository, ManagerRegistry $manager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
