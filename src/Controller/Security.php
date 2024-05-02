@@ -30,7 +30,7 @@ use GuzzleHttp\Client;
 
 class Security extends AbstractController
 {
-    #[Route('/inscription', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
+    #[Route('/inscription2', name: 'app_vendeur_inscription1', methods: ['GET', 'POST'])]
     public function newVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $vendeur = new Vendeur();
@@ -53,10 +53,10 @@ class Security extends AbstractController
             $entityManager->persist($vendeur);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_vendeur', ['vendeurId' => $vendeur->getIdvendeur()]);
+            return $this->redirectToRoute('loginv');
         }
     
-        return $this->render('vendeur/inscription.html.twig', [
+        return $this->render('vendeur/Signup.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -117,7 +117,7 @@ if ($form->isSubmitted() && $form->isValid()) {
 }
 
 #[Route('/profile', name: 'app_profile')]
-public function profile(Request $request,SessionInterface $session,VendeurRepository $vendeurRepository): Response
+public function profile(Request $request,SessionInterface $session,VendeurRepository $vendeurRepository, StockRepository $StockRepository): Response
 {    // Get the user_id from the session
     $vendeurid = $request->getSession()->get('vendeur_id');
 
@@ -136,7 +136,9 @@ public function profile(Request $request,SessionInterface $session,VendeurReposi
     return $this->render('vendeur/Profilfront.html.twig', [
         'latitude' => $latitude,
         'longitude' => $longitude,
-        'vendeur' => $vendeur,]);
+        'vendeur' => $vendeur,
+        'stock' => $StockRepository->findAll()
+    ]);
    
     
 }

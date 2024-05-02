@@ -3,6 +3,42 @@
 {% block title %}
 TOUNSI LL TOUNSI   
 {% endblock %}
+ {% block notification %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"> <i class="ti-email"></i>
+                                <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated bounceInDown">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title">Notifications</div>
+                                         <div class="message-center">
+                                          {% for stock in stock %}
+                                        {% if  stock.IdVendeur == vendeur %}
+                                        
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)">
+                                               
+                                                    <h5>Admin Notification</h5> <span class="mail-desc">the admin accepted your 
+                                                    product</span><br>
+                                                     <span class="time">in {{ "now"|date_modify("-1 hour")|date("H:i:s") }} of {{ "now"|date("Y-m-d") }}</span>
+                                              
+                                            </a>
+                                            
+                                          {% endif %}
+                                         {% endfor %}
+                                        </div>
+                                    </li>
+                                    
+                                    <li>
+                                        <a class="nav-link text-center link" href="javascript:void(0);"> <strong>Check
+                                                all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+  {% endblock %}
 
 {% block ktiba3 %}
 <!-- Row -->
