@@ -2,50 +2,57 @@
 {% block title %}
     All Users
 {% endblock %}
-
+{% block search %}
+  <form id="search-form" class="app-search d-none d-md-block d-lg-block">
+    <input id="search-input" type="text" class="form-control" placeholder="Search & enter">
+  </form>
+{% endblock %}
     
-                {% block ktiba %}
-                <div class="row"id="user-table">
-                    <div class="col-12"id="user-table">
-                        <div class="card"id="user-table">
-                            <div class="card-body"id="user-table">
-                                <h4 class="card-title">Show Vendeurs</h4>
-                                 {% for vendeur in Vendeur %}
-                    
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-3"><img src="{{ asset('uploads/' ~ vendeur.image) }}" class="img-fluid" /></div>
-                                    <div class="col-lg-8 col-md-9" id="slimtest1" style="height: 250px;">
-                                        <div>
-                                        {% for stock in Stock %}
-                                        {% if  stock.IdVendeur == vendeur %}
-                                        
-                                        <h5 style="color: green;">This product is already added to the Database</h5>
-                                        {% endif %}
-                                         {% endfor %}
-                                             <p>{{vendeur.nom}} </p>
-                                             <p>{{vendeur.nomproduit}} </p>
-                                             <p>{{vendeur.email}} </p>
-                                             <p>{{vendeur.motdepasse}} </p>
-                                             <p>{{vendeur.description}} </p>
-                                             <p>{{vendeur.type}} </p>
-                                             <a class="btn btn-primary" href="{{ path('app_update', {'id': vendeur.IdVendeur}) }}" role="button">edite</a> 
-                                             <a class="btn">{{ include('vendeur/delete.html.twig') }} </a>
-                                             <a class="btn btn-primary" href="{{ path('app_stock_new', {'vendeurId': vendeur.IdVendeur}) }}" role="button">insert into stock</a>
-                                           
+{% block ktiba %}
+<div class="row" id="user-table">
+    <div class="col-12" id="user-table">
+        <div class="card" id="user-table">
+            <div class="card-body" id="user-table">
+                <h4 class="card-title">Show Vendeurs</h4>
+                <div id="vendeur-list">
+                    {% include 'vendeur/vendeur_list.html.twig' with {'vendeurs': Vendeur} %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+   // Function to update vendeur list based on search input
+function updateVendeurList() {
+    var searchTerm = $('#search-input').val();
+    console.log("Search Term:", searchTerm); // Check if searchTerm is correctly retrieved
+    $.ajax({
+        url: '{{ path('app_vendeur_search') }}',
+        type: 'GET',
+        data: { search: searchTerm },
+        success: function(response) {
+            console.log("AJAX Response:", response); // Check the response from the server
+            $('#vendeur-list').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", error); // Log any errors that occur during the AJAX request
+        }
+    });
+}
+
+</script>
+ <script>
+        $(document).ready(function() {
+            // Bind updateVendeurList function to input event of search input field
+            $('#search-input').on('input', function() {
+                updateVendeurList();
+            });
+        });
+    </script>
+{% endblock %}
 
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <br>
-                                <br>
-                               
-                                {% endfor %}
-                               
-                            </div>
-                        </div>
 
-                        
- 
-                {% endblock %}
+

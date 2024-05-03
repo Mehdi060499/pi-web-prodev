@@ -23,7 +23,16 @@ class VendeurRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Vendeur::class);
     }
+    public function findBySearchTerm(string $searchTerm): array
+{
+    $query = $this->createQueryBuilder('v')
+        ->where('v.nom LIKE :searchTerm OR v.nomproduit LIKE :searchTerm OR v.email LIKE :searchTerm OR v.description LIKE :searchTerm')
+        ->setParameter('searchTerm', '%'. $searchTerm. '%')
+        ->getQuery()
+        ->getResult();
 
+    return $query;
+}
     //    /**
 //     * @return Vendeur[] Returns an array of vendeur objects
 //     */

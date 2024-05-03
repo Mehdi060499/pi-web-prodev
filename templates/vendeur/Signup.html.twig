@@ -7,7 +7,8 @@ TOUNSI LL TOUNSI
 <div class="wrapper">
    
 
-    
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
         <form method="post" enctype="multipart/form-data">
 
              {{ form_start(form, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
@@ -49,6 +50,10 @@ TOUNSI LL TOUNSI
                         {{ form_errors(form.image) }}
                   
                 </div>
+                <div class="form-group">
+               {{ form_label(form.captcha) }}
+               {{ form_widget(form.captcha, {'attr': {'class': 'g-recaptcha', 'data-sitekey': "6LfceI8pAAAAAGS2D1UpONxYyUybT9udsq1bG2qm"}}) }}
+               </div>
 
 
             

@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 
@@ -87,6 +88,17 @@ class VendeurController extends AbstractController
         return $this->render('vendeur/aff.html.twig', [
             'Vendeur' => $VendeurRepository->findAll(),
             'Stock' => $StockRepository->findAll()
+        ]);
+    }
+
+    #[Route('/search', name: 'app_vendeur_search', methods: ['GET'])]
+    public function search(VendeurRepository $vendeurRepository, Request $request): Response
+    {
+        $searchTerm = $request->query->get('search');
+        $vendeurs = $searchTerm ? $vendeurRepository->findBySearchTerm($searchTerm) : $vendeurRepository->findAll();
+        
+        return $this->render('vendeur/vendeur_list.html.twig', [
+            'vendeurs' => $vendeurs
         ]);
     }
 

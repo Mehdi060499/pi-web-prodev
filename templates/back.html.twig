@@ -88,9 +88,9 @@
                         <!-- Search -->
                         <!-- ============================================================== -->
                          <li class="nav-item">
-            <form id="search-form" class="app-search d-none d-md-block d-lg-block">
-                <input id="search-input" type="text" class="form-control" placeholder="Search & enter">
-            </form>
+                         {% block search %}
+          
+            {% endblock %}
         </li>
                     </ul>
                     <!-- ============================================================== -->
@@ -385,6 +385,16 @@
                                 <li><a href="layout-fix-header.html">Fix header</a></li>
                                 <li><a href="layout-fix-sidebar.html">Fix sidebar</a></li>
                                 <li><a href="layout-fix-header-sidebar.html">Fixe header &amp; Sidebar</a></li>
+                            </ul>
+                        </li>
+
+                          <li class="nav-small-cap">--- Events</li>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-truck"></i><span class="hide-menu">Events</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{ path ('calendar_events')}}">Calendar</a></li>
+                               
+                   
+                     
                             </ul>
                         </li>
                       

@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File as AssertFile;
 use Beelab\Recaptcha2Bundle\Validator\Constraints\Recaptcha2;
 use Beelab\Recaptcha2Bundle\Form\Type\RecaptchaType;
-class VendeurFormType extends AbstractType
+class SignuppType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -38,7 +38,9 @@ class VendeurFormType extends AbstractType
                     ])
                 ],
             ])
-           
+            ->add('captcha', RecaptchaType::class, [
+                'constraints' => new Recaptcha2(),
+            ])
         ;
     }
 

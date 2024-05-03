@@ -15,6 +15,7 @@ use App\Entity\Logins;
 use App\Form\StockType;
 use App\Form\LoginVType;
 use App\Form\LLoginType;
+use App\Form\SignuppType;
 use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -26,17 +27,26 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 
 class Security extends AbstractController
 {
     #[Route('/inscription2', name: 'app_vendeur_inscription1', methods: ['GET', 'POST'])]
-    public function newVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function newVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder,FlashBagInterface $flashBag): Response
     {
         $vendeur = new Vendeur();
-        $form = $this->createForm(VendeurFormType::class, $vendeur);
+        $form = $this->createForm(SignuppType::class, $vendeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
+
+            if (empty($recaptchaResponse)) {
+                $flashBag->add('error', 'Veuillez cocher le ReCaptcha.');
+                return $this->redirectToRoute('app_vendeur_inscription1');
+            }
             $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
             $vendeur->setMotdepasse($hashedPassword);
             $image = $form->get('image')->getData();
