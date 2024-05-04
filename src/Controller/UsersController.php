@@ -23,6 +23,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Joli\JoliNotif\Notification;
+use Joli\JoliNotif\NotifierFactory;
+
+
 
 class UsersController extends AbstractController
 {
@@ -99,7 +105,7 @@ class UsersController extends AbstractController
              $nomUtilisateur = $user->getNom();
             $emailUtilisateur = $user->getEmail();
             $message = "Bonjour $nomUtilisateur, votre compte $emailUtilisateur a été créé avec succès .";
-           // $userRepository->sms('+21693323188', $message);
+            $userRepository->sms('+21654026538', $message);
             // Ajouter l'utilisateur à la base de données
             $userRepository->add($user);
             
@@ -140,8 +146,9 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
             } elseif ($user->getRole() === 1) {
                 return new RedirectResponse($this->generateUrl('profile'));
             } elseif ($user->getRole() === 2) {
+                $this->sendNotification();
                 $errorMessage = "L'utilisateur est bloqué.";
-                $errorType = "blocked";
+                
             }
             
             
@@ -154,7 +161,7 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     return $this->render('users/userfront2.html.twig', [
         'loginForm' => $form->createView(),
         'error' => $error,
-        'errorType' => $errorType,
+       
     ]);
 }
     
@@ -172,6 +179,7 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
         return $this->render('users/allusers.html.twig', [
             'users' => $users,
             'user2'=>$user2,
+            
         ]);
     }
 
@@ -299,6 +307,149 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     }
 
    
+
+
+    
+    public function displaySortedByIdASC(Request $request,SessionInterface $session,UserRepository $userRepository)
+    {$userId = $request->getSession()->get('user_id');
+        $user2 = $userRepository->find($userId);
+        $users = $this->getDoctrine()->getRepository(Users::class)->findBy([], ['idclient' => 'ASC']);
+        return $this->render('users/allusers.html.twig', [
+            'users' => $users,
+            'user2'=>$user2,
+        ]);
+    }
+    
+    public function displaySortedByNomASC(Request $request,SessionInterface $session,UserRepository $userRepository)
+    {$userId = $request->getSession()->get('user_id');
+        $user2 = $userRepository->find($userId);
+        $users = $this->getDoctrine()->getRepository(Users::class)->findBy([], ['nom' => 'ASC']);
+        return $this->render('users/allusers.html.twig', [
+            'users' => $users,
+            'user2'=>$user2,
+        ]);
+    }
+    
+    public function displaySortedByIdDESC(Request $request,SessionInterface $session,UserRepository $userRepository)
+    {$userId = $request->getSession()->get('user_id');
+        $user2 = $userRepository->find($userId);
+        $users = $this->getDoctrine()->getRepository(Users::class)->findBy([], ['idclient' => 'DESC']);
+        return $this->render('users/allusers.html.twig', [
+            'users' => $users,
+            'user2'=>$user2,
+        ]);
+    }
+    
+    public function displaySortedByNomDESC(Request $request,SessionInterface $session,UserRepository $userRepository)
+    {$userId = $request->getSession()->get('user_id');
+        $user2 = $userRepository->find($userId);
+        $users = $this->getDoctrine()->getRepository(Users::class)->findBy([], ['nom' => 'DESC']);
+        return $this->render('users/allusers.html.twig', [
+            'users' => $users,
+            'user2'=>$user2,
+        ]);
+    }
+
+  
+
+    #[Route('/generate-pdf', name: 'generate_pdf')]
+    public function generatePdf(Request $request, UserRepository $userRepository): Response
+    {
+        // Récupérer tous les utilisateurs
+        $users = $userRepository->findAll();
+    
+        // Créer une vue PDF en passant les utilisateurs
+        $html = $this->renderView('users/pdf_template.html.twig', [
+            'users' => $users,
+        ]);
+    
+        // Configuration de Dompdf
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+    
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+    
+        // (Optionnel) Configurez la mise en page PDF ici
+    
+        $dompdf->render();
+    
+        // Sortie du PDF généré
+        $dompdf->stream("all_users.pdf", [
+            "Attachment" => true
+        ]);
+    
+        return new Response();
+    }
+
+    #[Route('/forgot-password', name: 'forgot_password')]
+    public function forgotPassword(Request $request, UserRepository $userRepository, MailerInterface $mailer): Response
+    {
+        // Récupérer l'email soumis dans le formulaire
+        $email = $request->request->get('email');
+    
+        // Rechercher l'utilisateur par son email
+        $user = $userRepository->findOneBy(['email' => $email]);
+    
+        if (!$user) {
+            // Si l'utilisateur n'existe pas, afficher un message d'erreur
+            $this->addFlash('error', 'User with this email does not exist.');
+        } else {
+            // Générer un nouveau mot de passe aléatoire
+            $newPassword = bin2hex(random_bytes(8)); // Génère un mot de passe de 16 caractères hexadécimaux aléatoires
+    
+            // Hacher le nouveau mot de passe
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+    
+            // Mettre à jour le mot de passe de l'utilisateur
+            $user->setMotdepasse($hashedPassword);
+    
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+    
+            // Envoyer l'email avec le nouveau mot de passe
+            $email = (new Email())
+                ->from('your_email@example.com')
+                ->to($user->getEmail())
+                ->subject('Password Reset')
+                ->text("Your new password is: $newPassword");
+    
+            $mailer->send($email);
+    
+            // Afficher un message de succès
+            $this->addFlash('success', 'Password reset email has been sent with your new password.');
+        }
+    
+        return $this->redirectToRoute('forgot_password');
+    }
+
+
+
+    private function sendNotification(): void
+    {
+        $notifier = NotifierFactory::create();
+
+        // Create a notification
+        $notification = (new Notification())
+            ->setTitle(' Login Attempt Failed')
+            ->setBody('User is blocked !!!!');
+        //->setIcon(DIR.'/assets/img/warning.png');
+
+        // Send the notification
+        $notifier->send($notification);
+    }
+
+
+    #[Route('/user/stats', name: 'app_user_stat')]
+    public function stats(UserRepository $userRepository)
+    {
+        $stats = $userRepository->getStatsByStatut();
+
+        return $this->render('users/stats.html.twig', [
+            'stats' => $stats,
+        ]);
+    }
 
 
 

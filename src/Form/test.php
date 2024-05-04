@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
-class UserForgotPasswordType extends AbstractType
+class test extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -19,6 +19,8 @@ class UserForgotPasswordType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        // Pas de configuration particulière requise pour ce formulaire
+        $resolver->setDefaults([
+            // Configure your form options here
+        ]);
     }
 }

@@ -21,6 +21,8 @@ class Users implements UserInterface
     #[ORM\Column(name: "nom", type: "string", length: 255, nullable: false)]
     private ?string $nom ;
 
+ 
+
     #[Assert\NotBlank(message: "Le prénom est requis")]
     #[Assert\Length(max: 255, maxMessage: "Le prénom ne peut pas dépasser {{ limit }} caractères")]
     #[ORM\Column(name: "prenom", type: "string", length: 255, nullable: false)]
@@ -171,6 +173,8 @@ private ?int $role ;
 
         return $this;
     }
+
+
 
    
 }

@@ -57,15 +57,27 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getStatsByStatut()
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('CASE WHEN u.role = 0 THEN \'Admin\' WHEN u.role = 1 THEN \'Utilisateur\' ELSE \'Utilisateur désactivé\' END as status, COUNT(u) as count')
+            ->groupBy('u.role');
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+
     public function sms(String $num, string $message): void
     {
+        
         // Your Account SID and Auth Token from twilio.com/console
-        $sid = 'ACc127cc9909e8a9096d15b10fa6c0572d';
-        $auth_token = '8953a6e3efc345b007b98dfff4b892d7';
+        $sid = 'AC370acbd74186d12f7f758c0f677df3e8';
+        $auth_token = '570c37fa9f842d11bdd3c18b981930ac';
         // In production, these should be environment variables. E.g.:
-        // $auth_token = $_ENV["TWILIO_AUTH_TOKEN"]
+         $auth_token = $_ENV["TWILIO_AUTH_TOKEN"];
         // A Twilio number you own with SMS capabilities
-        $twilio_number = "+12564140813";
+        $twilio_number = "+12564084038";
 
         $client = new Client($sid, $auth_token);
         $client->messages->create(
