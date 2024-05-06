@@ -9,9 +9,21 @@ TOUNSI LL TOUNSI
     <div class="form-box">
         <div class="login-container" id="login">
             <div class="top">
-                <span>Don't have an account? <a href="#" onclick="register()">Sign Up</a></span>
+                <span>Don't have an account? <a href="{{ path ('userfront')}}" onclick="register()">Sign Up</a></span>
                 <header>Login</header>
             </div>
+          {% if error %}
+    {% if errorType == "blocked" %}
+        <div class="alert alert-warning" role="alert">
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+{% endif %}
+
             {{ form_start(loginForm) }}
             <div class="input-box">
                 {{ form_row(loginForm.email, {'attr': {'class': 'input-field', 'placeholder': 'Email'}}) }}
@@ -31,7 +43,7 @@ TOUNSI LL TOUNSI
                     <label for="login-check"> Remember Me</label>
                 </div>
                 <div class="two">
-                    <label><a href="#">Forgot password?</a></label>
+                    <label><a href="">Forgot password?</a></label>
                 </div>
             </div>
         </div>

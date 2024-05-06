@@ -17,4 +17,5 @@ return [
     Symfony\Bundle\MercureBundle\MercureBundle::class => ['all' => true],
     CalendarBundle\CalendarBundle::class => ['all' => true],
     Beelab\Recaptcha2Bundle\BeelabRecaptcha2Bundle::class => ['all' => true],
+
 ];

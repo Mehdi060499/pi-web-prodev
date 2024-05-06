@@ -1,0 +1,46 @@
+<!-- pdf_template.html.twig -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+    <style>
+        /* CSS pour centrer le tableau */
+        .center-table {
+            margin: auto;
+            width: 80%; /* Ajustez la largeur du tableau selon vos besoins */
+        }
+    </style>
+</head>
+<body>
+    <!-- Div pour centrer le tableau -->
+    <div class="center-table">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="user-table" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.nom }}</td>
+                                <td>{{ user.prenom }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.role }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

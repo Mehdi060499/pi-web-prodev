@@ -37,3 +37,4 @@ when@test:
                 cost: 4 # Valeur la plus basse possible pour bcrypt
                 time_cost: 3 # Valeur la plus basse possible pour argon
                 memory_cost: 10 # Valeur la plus basse possible pour argon
+
