@@ -19,3 +19,5 @@ utilisateur_display_sorted_by_nom_desc:
 app_user_stat:
     path: /user/stats
     controller: App\Controller\UsersController::stats
+calendar:
+    resource: "@CalendarBundle/Resources/config/routing.yaml"
