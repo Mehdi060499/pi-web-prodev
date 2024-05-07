@@ -27,6 +27,23 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\NotifierFactory;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Entity\Vendeur;
+use App\Form\VendeurFormType;
+use App\Repository\VendeurRepository;
+use App\Entity\Stock;
+use App\Entity\Logins;
+use App\Form\StockType;
+use App\Form\LoginVType;
+use App\Form\LLoginType;
+use App\Form\SignuppType;
+use App\Repository\StockRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 
 
@@ -121,7 +138,7 @@ class UsersController extends AbstractController
 
 
    #[Route('/userfront2', name: 'userfront2')]
-public function userfront2(Request $request, AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
+public function userfront2(Request $request, EntityManagerInterface $entityManager , AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, VendeurRepository $vendeurRepository): Response
 {
     // Créer le formulaire de connexion
     $form = $this->createForm(LoginFormType::class);
@@ -134,7 +151,10 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
     if ($form->isSubmitted() && $form->isValid()) {
         $formData = $form->getData();
         $user = $userRepository->findOneBy(['email' => $formData['email']]);
-        
+        $vendeur = $vendeurRepository->findOneBy(['email' => $formData['email']]);
+        $ipaddress = '';
+        $login = new Logins();
+
         // Vérifier si l'utilisateur existe et si le mot de passe est correct
         if ($user && $passwordEncoder->isPasswordValid($user, $formData['motdepasse'])) {
             // Créer la session de l'utilisateur
@@ -152,7 +172,24 @@ public function userfront2(Request $request, AuthenticationUtils $authentication
             }
             
             
-        } else {
+        } elseif ($vendeur && $passwordEncoder->isPasswordValid($vendeur, $formData['motdepasse']))
+        {
+            $session->set('vendeur_id', $vendeur->getIdvendeur());
+            $login->setIdvendeur($vendeur);
+            $client = HttpClient::create();
+        $response = $client->request('GET', 'http://ipinfo.io/json');
+        $data = json_decode($response->getContent(), true);
+        $ipaddress = $data['ip'];
+           $login->setIp($ipaddress); 
+           $entityManager->persist($login);
+           $entityManager->flush();
+    
+            // Redirection en fonction du rôle de l'utilisateur
+            // Modifier cette logique selon les besoins
+            // Par exemple, pour un vendeur, vous pouvez rediriger vers une page spécifique
+            return new RedirectResponse($this->generateUrl('app_profile'));
+        } 
+        else {
             $error = 'Mot de passe incorrect';
         }
     }

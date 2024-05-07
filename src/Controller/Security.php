@@ -63,7 +63,7 @@ class Security extends AbstractController
             $entityManager->persist($vendeur);
             $entityManager->flush();
     
-            return $this->redirectToRoute('loginv');
+            return $this->redirectToRoute('userfront2');
         }
     
         return $this->render('vendeur/Signup.html.twig', [
@@ -126,7 +126,7 @@ if ($form->isSubmitted() && $form->isValid()) {
     ]);
 }
 
-#[Route('/profile', name: 'app_profile')]
+#[Route('/profilev', name: 'app_profile')]
 public function profile(Request $request,SessionInterface $session,VendeurRepository $vendeurRepository, StockRepository $StockRepository): Response
 {    // Get the user_id from the session
     $vendeurid = $request->getSession()->get('vendeur_id');
