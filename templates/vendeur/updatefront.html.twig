@@ -3,7 +3,16 @@
 {% block title %}
    tounsi lel tounsi
 {% endblock %}
+{% block sidebar %}
+<li class="nav-small-cap">--- MY ACCOUNT </li>
+                        </li>
+  <li> <a class="" href="{{ path ('profile')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu"> My Profile</span></a>
 
+       <li> <a class="" href="{{ path('app_update3', {'id': vendeur.idvendeur}) }}" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu"> update</span></a>
+          <li> <a class="" href="{{ path ('logout')}}" aria-expanded="false"><i class="fa fa-power-off"></i><span class="hide-menu">  Logout</span></a>
+
+                        </li>
+{% endblock %}
 {% block ktiba3 %}
   
 <div class="row">
@@ -58,7 +67,7 @@
 <div class="form-group form-button">
     {{ form_row(form) }}
     
-    <button type="submit" class="btn btn-dark">Signup</button>
+    <button type="submit" class="btn btn-dark">Update</button>
 </div>
 {{ form_end(form) }}
 

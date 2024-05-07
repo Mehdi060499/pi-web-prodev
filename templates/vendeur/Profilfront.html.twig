@@ -40,6 +40,17 @@ TOUNSI LL TOUNSI
                         </li>
   {% endblock %}
 
+{% block sidebar %}
+<li class="nav-small-cap">--- MY ACCOUNT </li>
+                        </li>
+  <li> <a class="" href="{{ path ('profile')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu"> My Profile</span></a>
+
+       <li> <a class="" href="{{ path('app_update3', {'id': vendeur.idvendeur}) }}" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu"> update</span></a>
+          <li> <a class="" href="{{ path ('logout')}}" aria-expanded="false"><i class="fa fa-power-off"></i><span class="hide-menu">  Logout</span></a>
+
+                        </li>
+{% endblock %}
+
 {% block ktiba3 %}
 <!-- Row -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>

@@ -68,7 +68,7 @@ class UserRepository extends ServiceEntityRepository
     }
     
 
-    public function sms(String $num, string $message): void
+   /* public function sms(String $num, string $message): void
     {
         
         // Your Account SID and Auth Token from twilio.com/console
@@ -90,7 +90,7 @@ class UserRepository extends ServiceEntityRepository
                 'body' =>$message,
             ]
         );
-    }
+    }*/
 
     
     

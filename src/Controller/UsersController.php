@@ -104,8 +104,8 @@ class UsersController extends AbstractController
             $user->setMotdepasse($hashedPassword);
              $nomUtilisateur = $user->getNom();
             $emailUtilisateur = $user->getEmail();
-            $message = "Bonjour $nomUtilisateur, votre compte $emailUtilisateur a été créé avec succès .";
-            $userRepository->sms('+21654026538', $message);
+          //  $message = "Bonjour $nomUtilisateur, votre compte $emailUtilisateur a été créé avec succès .";
+         //   $userRepository->sms('+21654026538', $message);
             // Ajouter l'utilisateur à la base de données
             $userRepository->add($user);
             
