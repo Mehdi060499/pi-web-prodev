@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class VendeurController extends AbstractController
 {
-    #[Route('/inscription', name: 'app_vendeur_inscription', methods: ['GET', 'POST'])]
+    #[Route('/inscription3', name: 'app_vendeur_inscription3', methods: ['GET', 'POST'])]
     public function newVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $vendeur = new Vendeur();
@@ -102,7 +102,7 @@ class VendeurController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_vendeur_delete', methods: ['POST'])]
+    #[Route('/{id}/deletev', name: 'app_vendeur_delete', methods: ['POST'])]
     public function delete($id, VendeurRepository $vendeurRepository, StockRepository $StockRepository, Request $request): Response
     {
         $vendeur = $vendeurRepository->find($id);
@@ -122,7 +122,7 @@ class VendeurController extends AbstractController
         return $this->redirectToRoute('app_vendeur', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/edit', name: 'app_update', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit2', name: 'app_update', methods: ['GET', 'POST'])]
     public function edit($id,Request $request, VendeurRepository $vendeurRepository, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $vendeur = $vendeurRepository->find($id);
