@@ -1,0 +1,66 @@
+{% extends 'front2.html.twig' %}
+
+{% block title %}
+TOUNSI LL TOUNSI    
+{% endblock %}
+{% block sidebar %}
+         <li class="nav-small-cap">--- MY ACCOUNT </li>
+                        </li>
+                        <li> <a class="" href="{{ path ('profile')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu"> My Profile</span></a>
+
+                        <li> <a class="" href="{{ path('update2', {'id': user.idclient}) }}" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu"> update</span></a>
+                        
+          <li> <a class="" href="{{ path ('logout')}}" aria-expanded="false"><i class="fa fa-power-off"></i><span class="hide-menu">  Logout</span></a>
+
+{% endblock %}
+{% block ktiba3 %}
+    <div class="row">
+                    <div class="col-12">
+                        <div class="card card-body">
+                            <h4 class="card-title">Update</h4>
+                            <h5 class="card-subtitle">{{ user.prenom }} {{ user.nom }} </h5>
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    {{ form_start(form, {'attr': {'class': 'register-form'}}) }}
+<div class="form-group">
+    <label for="user_nom">First Name</label>
+    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Enter First Name'}}) }}
+    {{ form_errors(form.nom) }} {# Affiche les erreurs de validation pour le champ nom #}
+</div>
+<div class="form-group">
+    <label for="user_prenom">Last Name</label>
+    {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Enter Last Name'}}) }}
+    {{ form_errors(form.prenom) }} {# Affiche les erreurs de validation pour le champ prenom #}
+</div>
+<div class="form-group">
+    <label for="user_email">Email</label>
+    {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter Email'}}) }}
+    {{ form_errors(form.email) }} {# Affiche les erreurs de validation pour le champ email #}
+</div>
+<div class="form-group">
+    <label for="user_motdepasse">Password</label>
+    {{ form_widget(form.motdepasse, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
+    {{ form_errors(form.motdepasse) }} {# Affiche les erreurs de validation pour le champ motdepasse #}
+</div>
+<div class="form-group">
+    <label for="user_adresse">Address</label>
+    {{ form_widget(form.adresse, {'attr': {'class': 'form-control', 'placeholder': 'Enter Address'}}) }}
+    {{ form_errors(form.adresse) }} {# Affiche les erreurs de validation pour le champ adresse #}
+</div>
+<div class="form-group">
+    <label for="user_role">Role</label>
+    {{ form_widget(form.role, {'attr': {'class': 'form-control', 'placeholder': 'Le rôle doit être 0, 1 ou 2'}}) }}
+    {{ form_errors(form.role) }} {# Affiche les erreurs de validation pour le champ role #}
+</div>
+
+<div class="form-group form-button">
+    {{ form_row(form) }}
+    <button type="submit" class="btn btn-dark">Signup</button>
+</div>
+{{ form_end(form) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{% endblock %}
