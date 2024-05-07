@@ -33,7 +33,36 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class Security extends AbstractController
-{
+{ #[Route('/inscription3', name: 'app_vendeur_inscription3', methods: ['GET', 'POST'])]
+    public function newVendeurx(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        $vendeur = new Vendeur();
+        $form = $this->createForm(VendeurFormType::class, $vendeur);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+            $vendeur->setMotdepasse($hashedPassword);
+            $image = $form->get('image')->getData();
+            if($image) // ajout image
+            {
+                $fileName = md5(uniqid()).'.'.$image->guessExtension();
+                $image->move($this->getParameter('files_directory'), $fileName);
+                $vendeur->setImage($fileName);
+            } else {
+               
+                $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
+            }
+
+            $entityManager->persist($vendeur);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_vendeur', ['vendeurId' => $vendeur->getIdvendeur()]);
+        }
+    
+        return $this->render('vendeur/inscription.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
     #[Route('/inscription2', name: 'app_vendeur_inscription1', methods: ['GET', 'POST'])]
     public function newVendeur(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder,FlashBagInterface $flashBag): Response
     {
