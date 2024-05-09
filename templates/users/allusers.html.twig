@@ -1,0 +1,64 @@
+{# allusers.html.twig #}
+
+{% extends 'back.html.twig' %}
+
+{% block title %}
+    All Users
+{% endblock %}
+
+{% block ktiba %}
+   <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+              <div class="col-md-6">
+    <select id="tri" onchange="sortUsers()" style="background-color: #2A3038; color: white; border: 1px; border-radius: 5px; padding: 5px; width: 500px;">
+      <option value="{{ path('utilisateur_display_sorted_by_id_asc') }}" {% if app.request.attributes.get('_route') == 'utilisateur_display_sorted_by_id_asc' %} selected {% endif %}>Identifiant croissant</option>
+      <option value="{{ path('utilisateur_display_sorted_by_id_desc') }}" {% if app.request.attributes.get('_route') == 'utilisateur_display_sorted_by_id_desc' %} selected {% endif %}>Identifiant décroissant</option>
+      <option value="{{ path('utilisateur_display_sorted_by_nom_asc') }}" {% if app.request.attributes.get('_route') == 'utilisateur_display_sorted_by_nom_asc' %} selected {% endif %}>Nom croissant</option>
+      <option value="{{ path('utilisateur_display_sorted_by_nom_desc') }}" {% if app.request.attributes.get('_route') == 'utilisateur_display_sorted_by_nom_desc' %} selected {% endif %}>Nom décroissant</option>
+    </select>
+  </div>
+            <div class="card-header bg-info">
+                <h4 class="m-b-0 text-white">  <td>{{ user2.prenom }}</td> {{ user2.nom }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="user-table" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Delete</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.nom }}</td>
+                                    <td>{{ user.prenom }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>{{ include('users/delete2.html.twig') }}</td>
+                                    <td><a href="{{ path('update', {'id': user.idclient}) }}">edit</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sortUsers() {
+        var selectElement = document.getElementById("tri");
+        var selectedOption = selectElement.options[selectElement.selectedIndex].value;
+        window.location.href = selectedOption; // Rediriger vers l'URL correspondant à l'option sélectionnée
+    }
+</script>
+
+{% endblock %}

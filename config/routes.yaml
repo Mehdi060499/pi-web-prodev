@@ -1,3 +1,27 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index# routing.yaml
+utilisateur_display_sorted_by_id_asc:
+    path: /sorted_by_id_asc
+    controller: App\Controller\UsersController::displaySortedByIdASC
+
+utilisateur_display_sorted_by_id_desc:
+    path: /sorted_by_id_desc
+    controller: App\Controller\UsersController::displaySortedByIdDESC
+
+utilisateur_display_sorted_by_nom_asc:
+    path: /sorted_by_nom_asc
+    controller: App\Controller\UsersController::displaySortedByNomASC
+
+utilisateur_display_sorted_by_nom_desc:
+    path: /sorted_by_nom_desc
+    controller: App\Controller\UsersController::displaySortedByNomDESC
+app_user_stat:
+    path: /user/stats
+    controller: App\Controller\UsersController::stats
+calendar:
+    resource: "@CalendarBundle/Resources/config/routing.yaml"
+
 controllers:
     resource:
         path: ../src/Controller/

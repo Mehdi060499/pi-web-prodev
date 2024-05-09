@@ -1,0 +1,56 @@
+{% extends 'front.html.twig' %}
+{% block title %}
+TOUNSI LL TOUNSI    
+{% endblock %}
+
+{% block ktiba2 %}
+<div class="wrapper">
+    <div class="form-box">
+        <form method="post">
+            {{ form_start(form2) }}
+            <div class="two-forms">
+                <div class="input-box">
+                    {{ form_row(form2.nom, {'attr': {'class': 'input-field', 'placeholder': 'Firstname'}}) }}
+                    {{ form_errors(form2.nom) }}
+                    <i class="bx bx-user"></i>
+                </div>
+                <div class="input-box">
+                    {{ form_row(form2.prenom, {'attr': {'class': 'input-field', 'placeholder': 'Lastname'}}) }}
+                    {{ form_errors(form2.prenom) }}
+                    <i class="bx bx-user"></i>
+                </div>
+            </div>
+            <div class="input-box">
+                {{ form_row(form2.email, {'attr': {'class': 'input-field', 'placeholder': 'Email'}}) }}
+
+                <i class="bx bx-envelope"></i>
+            </div>
+            <div class="two-forms">
+                <div class="input-box">
+                    {{ form_row(form2.motdepasse, {'attr': {'class': 'input-field', 'placeholder': 'Password'}}) }}
+                  
+                    <i class="bx bx-lock-alt"></i>
+                </div>
+                <div class="input-box">
+                    {{ form_row(form2.adresse, {'attr': {'class': 'input-field', 'placeholder': 'Address'}}) }}
+                    {{ form_errors(form2.adresse) }}
+                    <i class="bx bx-user"></i>
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="submit" class="submit" value="Register">
+            </div>
+            <div class="two-col">
+                <div class="one">
+                    <input type="checkbox" id="register-check">
+                    <label for="register-check"> Remember Me</label>
+                </div>
+                <div class="two">
+                    <label><a href="#">Terms & conditions</a></label>
+                </div>
+            </div>
+            {{ form_end(form2) }}
+        </form>
+    </div>
+</div>
+{% endblock %}

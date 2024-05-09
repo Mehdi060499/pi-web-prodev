@@ -1,0 +1,123 @@
+{% extends 'front2.html.twig' %}
+
+{% block title %}
+TOUNSI LL TOUNSI   
+{% endblock %}
+ {% block notification %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"> <i class="ti-email"></i>
+                                <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated bounceInDown">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title">Notifications</div>
+                                         <div class="message-center">
+                                          {% for stock in stock %}
+                                        {% if  stock.IdVendeur == vendeur %}
+                                        
+                                            <!-- Message -->
+                                            <a href="javascript:void(0)">
+                                               
+                                                    <h5>Admin Notification</h5> <span class="mail-desc">the admin accepted your 
+                                                    product</span><br>
+                                                     <span class="time">in {{ "now"|date_modify("-1 hour")|date("H:i:s") }} of {{ "now"|date("Y-m-d") }}</span>
+                                              
+                                            </a>
+                                            
+                                          {% endif %}
+                                         {% endfor %}
+                                        </div>
+                                    </li>
+                                    
+                                    <li>
+                                        <a class="nav-link text-center link" href="javascript:void(0);"> <strong>Check
+                                                all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+  {% endblock %}
+
+{% block sidebar %}
+<li class="nav-small-cap">--- MY ACCOUNT </li>
+                        </li>
+  <li> <a class="" href="{{ path('app_profile')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu"> My Profile</span></a>
+
+       <li> <a class="" href="{{ path('app_update3', {'id': vendeur.idvendeur}) }}" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu"> update</span></a>
+          <li> <a class="" href="{{ path ('logout')}}" aria-expanded="false"><i class="fa fa-power-off"></i><span class="hide-menu">  Logout</span></a>
+
+                        </li>
+{% endblock %}
+
+{% block ktiba3 %}
+<!-- Row -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script> 
+
+<div class="row justify-content-center">
+    <!-- Column -->
+    <div class="col-lg-4 col-xlg-3 col-md-5 mx-auto">
+        <div class="card">
+            <div class="card-body text-center">
+</br></br></br>
+</br></br></br>
+</br>
+
+      <center class="m-t-30"> <img src="{{ asset('uploads/' ~ vendeur.image) }}" class="img-circle" width="150" />
+                        
+                                
+                                </center>
+<br>
+   
+     <h6 class="card-subtitle">Your Account :</h6>
+                <h4 class="card-title m-t-10">{{ vendeur.nom }} </h4>
+            </div>
+            <div>
+                <hr>
+            </div>
+            <div class="card-body text-center">
+                <small class="text-muted">Email address </small>
+                <h6>{{ vendeur.email }}</h6>
+                <small class="text-muted">product name </small>
+                <h6>{{ vendeur.nomproduit }}</h6>
+                <small class="text-muted">description </small>
+                <h6>{{ vendeur.description }}</h6>
+                <small class="text-muted">type de product </small>
+                <h6>{{ vendeur.type }}</h6>
+                
+             
+             
+               
+                <a href="https://www.facebook.com/?locale=fr_FR" class="btn btn-circle btn-secondary"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+</div>
+ <div class="map-box">
+                    <!-- Google Map Here -->
+                </div>
+                </br>
+                <small class="text-muted p-t-30 db">Social Profile</small>
+                <br>
+                        <div id="map" style="width: 50%; height: 50vh; margin: auto;"></div>
+  <script>
+    // Set the latitude and longitude obtained previously
+    const latitude = {{ latitude }};
+    const longitude = {{ longitude }};
+
+    // Initialize the map
+    const map = L.map('map').setView([latitude, longitude], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a marker to the map
+    L.marker([latitude, longitude]).addTo(map);
+  </script>
+<!-- Row -->
+{% endblock %}

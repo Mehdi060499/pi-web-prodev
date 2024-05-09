@@ -1,0 +1,24 @@
+{# templates/stock/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Add New Stock and Vendeur</h1>
+
+    {{ form_start(stockForm) }}
+    {{ form_row(stockForm.nomproduit) }}
+    {{ form_row(stockForm.quantite) }}
+    {{ form_row(stockForm.prix_unite) }}
+
+    {{ form_start(vendeurForm) }}
+    {{ form_row(vendeurForm.nom) }}
+    {{ form_row(vendeurForm.email) }}
+    {{ form_row(vendeurForm.motdepasse) }}
+    {{ form_row(vendeurForm.description) }}
+    {{ form_row(vendeurForm.type) }}
+    {{ form_row(vendeurForm.image) }}
+
+    <button type="submit">Submit</button>
+    {{ form_end(stockForm) }}
+    {{ form_end(vendeurForm) }}
+{% endblock %}
