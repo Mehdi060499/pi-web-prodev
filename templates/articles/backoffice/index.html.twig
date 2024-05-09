@@ -141,10 +141,10 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ article.nom }}</h2>
                     <p class="card-text">{{ article.prix }} TND</p>
-                    <a href="{{ path('article_supprimer', {'id': article.id}) }}" class="btn btn-danger" data-article-id="{{ article.id }}" style="margin-right: 80px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
+                    <a href="{{ path('article_supprimer', {'id': article.idarticle}) }}" class="btn btn-danger" data-article-id="{{ article.idarticle }}" style="margin-right: 80px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
                       <img src="{{asset('Images/trash.svg')}}" />
                     </a>
-                    <a href="{{ path('article_modifier', {'id': article.id}) }}" class="btn btn-primary" style="margin-left: 80px;" onclick="modifier(event)">
+                    <a href="{{ path('article_modifier', {'id': article.idarticle}) }}" class="btn btn-primary" style="margin-left: 80px;" onclick="modifier(event)">
                       <img src="{{asset('Images/pencil.svg')}}" />
                     </a>
                 </div>

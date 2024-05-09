@@ -5,3 +5,16 @@ controllers:
     type: attribute
 
 
+payment_success:
+    path: /payment/success
+    controller: App\Controller\PaymentController::success
+
+payment_cancel:
+    path: /payment/cancel
+    controller: App\Controller\PaymentController::cancel
+
+stripe_checkout:
+    path: /stripe/checkout
+    controller: App\Controller\StripeController::checkout
+    methods: ['GET', 'POST']
+

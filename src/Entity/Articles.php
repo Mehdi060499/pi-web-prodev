@@ -5,30 +5,31 @@ namespace App\Entity;
 use App\Repository\ArticlesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Table(name: "articles")]
 #[ORM\Entity(repositoryClass: ArticlesRepository::class)]
 class Articles
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "idarticle", type: "integer", nullable: false)]
     private ?int $idarticle = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "nom", type: "string", length: 30, nullable: false)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "description", type: "string", length: 50, nullable: false)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: "prix", type: "float", precision: 10, scale: 0, nullable: false)]
     private ?float $prix = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "image", type: "string", length: 100, nullable: false)]
     private ?string $image = null;
 
-    #[ORM\Column]
-    private ?int $quantite = null;
+    #[ORM\Column(name: "Quantite", type: "integer", nullable: false)]
+    private ?int $Quantite = null;
 
-    public function getId(): ?int
+    public function getIdarticle(): ?int
     {
         return $this->idarticle;
     }
@@ -52,7 +53,6 @@ class Articles
 
     public function setDescription(string $description): static
     {
-
         $this->description = $description;
 
         return $this;
@@ -84,12 +84,11 @@ class Articles
 
     public function getQuantite(): ?int
     {
-        return $this->quantite;
+        return $this->Quantite;
     }
-
-    public function setQuantite(int $quantite): static
+    public function setQuantite(int $Quantite): static
     {
-        $this->quantite = $quantite;
+        $this->Quantite = $Quantite;
 
         return $this;
     }

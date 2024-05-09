@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 //use Symfony\Component\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
+
 
 
 
@@ -35,7 +40,7 @@ class ArticlesController extends AbstractController
 
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, private PaginatorInterface $paginator)
     {
         $this->entityManager = $entityManager;
     }
@@ -83,56 +88,56 @@ class ArticlesController extends AbstractController
     #[Route("/articles/{id}/modifier", name:"article_modifier")]
     public function modifier(Request $request,int $id): Response
     {
-     // Récupérer l'article à modifier
-     $article = $this->entityManager->getRepository(Articles::class)->find($id);
+        // Récupérer l'article à modifier
+        $article = $this->entityManager->getRepository(Articles::class)->find($id);
 
-     if (!$article) {
-         throw $this->createNotFoundException('L\'article avec l\'ID ' . $id . ' n\'existe pas.');
-     }
+        if (!$article) {
+            throw $this->createNotFoundException('L\'article avec l\'ID ' . $id . ' n\'existe pas.');
+        }
 
-     // Créer le formulaire pré-rempli avec les données de l'article
-     $form = $this->createForm(ArticlesType::class, $article);
-     $form->handleRequest($request);
-     if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename ='/'.'Pictures/'.$originalFilename.'.'.$imageFile->guessExtension();
-                // Move the file to the directory where images are stored
-                try {
-                    $imageFile->move(
-                        $this->getParameter('articles_images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+        // Créer le formulaire pré-rempli avec les données de l'article
+        $form = $this->createForm(ArticlesType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+                // Gérer l'upload de l'image
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename ='/'.'Pictures/'.$originalFilename.'.'.$imageFile->guessExtension();
+                    // Move the file to the directory where images are stored
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('articles_images_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+
+                    // Update the 'imagePath' property to store the image file name
+                    $article->setImage($newFilename);
                 }
 
-                // Update the 'imagePath' property to store the image file name
-                $article->setImage($newFilename);
-            }
+            // Persist and flush the article entity
+            $entityManager =$this->entityManager;
+            $entityManager->persist($article);
+            $entityManager->flush();
 
-        // Persist and flush the article entity
-        $entityManager =$this->entityManager;
-        $entityManager->persist($article);
-        $entityManager->flush();
+            return $this->redirectToRoute('app_articles');
+        }
 
-        return $this->redirectToRoute('app_articles');
-    }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traiter les données du formulaire et mettre à jour l'article dans la base de données
+            $this->entityManager->flush();
 
-     if ($form->isSubmitted() && $form->isValid()) {
-         // Traiter les données du formulaire et mettre à jour l'article dans la base de données
-         $this->entityManager->flush();
+            // Rediriger vers une nouvelle page ou une autre action après la modification
+            return $this->redirectToRoute('app_articles');
+        }
 
-         // Rediriger vers une nouvelle page ou une autre action après la modification
-         return $this->redirectToRoute('app_articles');
-     }
-
-     // Afficher le formulaire dans la vue de modification de l'article
-     return $this->render('articles/backoffice/modifier.html.twig', [
-         'form' => $form->createView(),
-     ]);
+        // Afficher le formulaire dans la vue de modification de l'article
+        return $this->render('articles/backoffice/modifier.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
 
@@ -152,7 +157,7 @@ class ArticlesController extends AbstractController
 
         return $this->redirectToRoute('app_articles'); // Remplacez 'app_homepage' par le nom réel de votre route de page d'accueil
 
-}
+    }
 
 
     public function getAll(): array
@@ -191,41 +196,54 @@ class ArticlesController extends AbstractController
 
     }
 
-    #[Route("/articles/shop", name:"articles_shop")]
-    public function paginateArticles(Request $request): Response
-{
-    // Créer une requête pour récupérer tous les articles
-    $queryBuilder = $this->entityManager->getRepository(Articles::class)->createQueryBuilder('a');
+    #[Route('/search-article', name: 'search_article', methods: ['POST'])]
+    public function searchByName(Request $request): Response
+    {
+        $searchTerm = $request->request->get('searchTerm');
+        $articles = $this->entityManager->getRepository(Articles::class)->searchByName($searchTerm);
+        
+        
+        return $this->render('articles/frontoffice/search.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+    
+    #[Route("/articles/accueil", name:"articles_shop")]
+    public function paginateArticles(Request $request, PaginatorInterface $paginator): Response
+    {
+        // Récupérer les données à paginer
+        $donnees = $this->getAll();
 
-    // Créer un objet Paginator avec la requête
-    $paginator = new Paginator($queryBuilder);
+        // Paginer les données
+        $articles = $paginator->paginate(
+            $donnees, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            4 // Nombre de résultats par page
+        );
 
-    // Définir le nombre d'articles par page
-    $limit = 8;
+        // Retourner l'objet Paginator
+        return $this->render('articles/frontoffice/shop.html.twig', [
+            'articles' => $articles,
+        ]);
 
-    // Obtenir la page courante (par défaut 1)
-    $page = $request->query->getInt('page', 1);
+   
+    }
 
-    // Calculer l'offset
-    $offset = ($page - 1) * $limit;
+    #[Route("/articles/boutique", name:"articles_boutique")]
+    public function boutique(Request $request): Response
+    {
+        // Récupérer les données à paginer
+        $articles = $this->getAll();
 
-    // Définir les limites de la requête
-    $paginator->getQuery()
-        ->setFirstResult($offset)
-        ->setMaxResults($limit);
+        // Retourner la vue
+        return $this->render('articles/frontoffice/boutique.html.twig', [
+            'articles' => $articles,
+        ]);
 
-    // Récupérer les articles paginés
-    $articleP = $paginator->getIterator();
+   
+    }
 
-    // Afficher les articles et les liens de pagination
-    return $this->render('articles/frontoffice/shop.html.twig', [
-        'articleP' => $articleP,
-        'currentPage' => $page,
-        'totalPages' => ceil(count($paginator) / $limit),
-    ]);
-}
-
-#[Route("/articles/{id}/delete", name:"supprimer_article_panier", methods: ["DELETE"]  )]
+    #[Route("/articles/{id}/delete", name:"supprimer_article_panier", methods: ["DELETE"]  )]
     public function deleteFromCart(Request $request, int $id): JsonResponse
     {
         // Récupérez le tableau du panier depuis la session
@@ -246,51 +264,51 @@ class ArticlesController extends AbstractController
         }
     }
 
-#[Route("/articles/{id}/cart", name:"ajouter_panier")]
-public function addToCart(Request $request, int $id): Response
-{
-    // Récupérez l'article à partir de l'ID (vous pouvez utiliser cette méthode ou toute autre méthode que vous utilisez)
-    $article = $this->entityManager->getRepository(Articles::class)->find($id);
+    #[Route("/articles/{id}/cart", name:"ajouter_panier")]
+    public function addToCart(Request $request, int $id): Response
+    {
+        // Récupérez l'article à partir de l'ID (vous pouvez utiliser cette méthode ou toute autre méthode que vous utilisez)
+        $article = $this->entityManager->getRepository(Articles::class)->find($id);
 
-    if (!$article) {
-        // Gérer le cas où l'article n'est pas trouvé
-        throw $this->createNotFoundException('L\'article avec l\'ID ' . $id . ' n\'existe pas.');
+        if (!$article) {
+            // Gérer le cas où l'article n'est pas trouvé
+            throw $this->createNotFoundException('L\'article avec l\'ID ' . $id . ' n\'existe pas.');
+        }
+
+        // Ajoutez ici la logique pour ajouter l'article au panier.
+        // Vous pouvez utiliser les sessions ou toute autre méthode pour stocker les articles dans le panier.
+
+        // Par exemple, vous pouvez ajouter l'article à la session comme ceci :
+        $cart = $request->getSession()->get('cart', []);
+        foreach ($cart as $cartItem) {
+            if ($cartItem->getIdarticle() === $article->getIdarticle()) {
+                // Si l'article est déjà dans le panier, redirigez l'utilisateur ou affichez un message
+                return $this->redirectToRoute('ajouter_panier', ['id' => $article->getIdarticle(),]); // Par exemple, redirigez vers la page d'accueil
+            }}
+        $cart[] = $article;
+        $request->getSession()->set('cart', $cart);
+
+
+
+        // Redirigez l'utilisateur vers une autre page ou affichez un message de succès.
+        //return $this->redirectToRoute('app_articles'); // Redirigez vers la page d'accueil par exemple
+        return $this->render('articles/frontoffice/cart.html.twig' , [
+            'id' => $article->getIdarticle(),
+            'cart' => $cart,]);
+
     }
 
-    // Ajoutez ici la logique pour ajouter l'article au panier.
-    // Vous pouvez utiliser les sessions ou toute autre méthode pour stocker les articles dans le panier.
+    #[Route("/articles/cart", name:"panier")]
+    public function cart(Request $request): Response
+    {
+        // Récupérez le panier depuis la session
+        $cart = $request->getSession()->get('cart', []);
 
-    // Par exemple, vous pouvez ajouter l'article à la session comme ceci :
-    $cart = $request->getSession()->get('cart', []);
-    foreach ($cart as $cartItem) {
-        if ($cartItem->getId() === $article->getId()) {
-            // Si l'article est déjà dans le panier, redirigez l'utilisateur ou affichez un message
-            return $this->redirectToRoute('ajouter_panier', ['id' => $article->getId(),]); // Par exemple, redirigez vers la page d'accueil
-        }}
-    $cart[] = $article;
-    $request->getSession()->set('cart', $cart);
-
-
-
-    // Redirigez l'utilisateur vers une autre page ou affichez un message de succès.
-    //return $this->redirectToRoute('app_articles'); // Redirigez vers la page d'accueil par exemple
-    return $this->render('articles/frontoffice/cart.html.twig' , [
-        'id' => $article->getId(),
-        'cart' => $cart,]);
-
-}
-
-#[Route("/articles/cart", name:"panier")]
-public function cart(Request $request): Response
-{
-    // Récupérez le panier depuis la session
-    $cart = $request->getSession()->get('cart', []);
-
-    // Affichez la page du panier en passant le contenu du panier à votre vue
-    return $this->render('articles/frontoffice/cart.html.twig', [
-        'cart' => $cart,
-    ]);
-}
+        // Affichez la page du panier en passant le contenu du panier à votre vue
+        return $this->render('articles/frontoffice/cart.html.twig', [
+            'cart' => $cart,
+        ]);
+    }
 
     #[Route("/articles/{id}/Wishlist", name:"ajouter_wishlist")]
     public function addToWishlist(Request $request, int $id): Response
@@ -309,9 +327,9 @@ public function cart(Request $request): Response
         // Par exemple, vous pouvez ajouter l'article à la session comme ceci :
         $wishlist = $request->getSession()->get('wishlist', []);
         foreach ($wishlist as $wishlistItem) {
-            if ($wishlistItem->getId() === $article->getId()) {
+            if ($wishlistItem->getIdarticle() === $article->getIdarticle()) {
                 // Si l'article est déjà dans le panier, redirigez l'utilisateur ou affichez un message
-                return $this->redirectToRoute('ajouter_wishlist', ['id' => $article->getId(),]); // Par exemple, redirigez vers la page d'accueil
+                return $this->redirectToRoute('ajouter_wishlist', ['id' => $article->getIdarticle(),]); // Par exemple, redirigez vers la page d'accueil
             }}
         $wishlist[] = $article;
         $request->getSession()->set('wishlist', $wishlist);
@@ -321,22 +339,41 @@ public function cart(Request $request): Response
         // Redirigez l'utilisateur vers une autre page ou affichez un message de succès.
         //return $this->redirectToRoute('app_articles'); // Redirigez vers la page d'accueil par exemple
         return $this->render('articles/frontoffice/wishlist.html.twig' , [
-            'id' => $article->getId(),
+            'id' => $article->getIdarticle(),
             'wishlist' => $wishlist,]);
 
     }
 
     #[Route("/articles/Wishlist", name:"wishlist")]
-public function wishlist(Request $request): Response
-{
-    // Récupérez le panier depuis la session
-    $wishlist = $request->getSession()->get('wishlist', []);
+    public function wishlist(Request $request): Response
+    {
+        // Récupérez le panier depuis la session
+        $wishlist = $request->getSession()->get('wishlist', []);
 
-    // Affichez la page du panier en passant le contenu du panier à votre vue
-    return $this->render('articles/frontoffice/wishlist.html.twig', [
-        'wishlist' => $wishlist,
-    ]);
-}
+        // Affichez la page du panier en passant le contenu du panier à votre vue
+        return $this->render('articles/frontoffice/wishlist.html.twig', [
+            'wishlist' => $wishlist,
+        ]);
+    }
+    #[Route('/inscription-newsletter', name: 'inscription_newsletter')]
+    public function inscriptionNewsletter(Request $request,MailerInterface $mailer): Response
+    {
+        $email = $request->request->get('email');
+
+        // Vous pouvez maintenant utiliser l'adresse e-mail pour envoyer le mail de bienvenue
+
+        // Exemple d'envoi de l'e-mail de bienvenue
+        $message = (new Email())
+            ->from('mtounsiltounsi@gmail.com')
+            ->to($email)
+            ->subject('Bienvenue à la newsletter de M Tounsi L Tounsi')
+            ->html($this->renderView('articles/frontoffice/bienvenue.html.twig'));
+
+        $mailer->send($message);
+
+        // Redirigez l'utilisateur vers une autre page après l'inscription
+        return $this->redirectToRoute('articles_shop');
+    }
 }
 
 

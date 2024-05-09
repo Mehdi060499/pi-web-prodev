@@ -6,6 +6,7 @@ use App\Entity\Articles;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
  * Class ArticlesRepository
  * @package App\Repository
@@ -28,6 +29,29 @@ class ArticlesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Articles::class);
     }
+
+    /*public function PaginateArticle(int $page,int $limit):PaginationInterface
+    {
+        return $this->paginator->paginate(
+            $this->createQueryBuilder('a')
+                ->orderBy('a.id', 'DESC')
+                ->setFirstResult($limit * ($page - 1))
+                ->setMaxResults($limit)
+                ->getQuery(),
+            $page,
+            $limit
+        );
+
+        /*return new PaginateArticle($this
+            ->createQueryBuilder('a')
+            ->orderBy('a.id', 'DESC')
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit)
+            ->getQuery()
+            setHint(Paginator::HINT_ENABLE_DISTINCT, false),
+            false
+    );
+    }*/
 
     /**
      * Retourne un tableau d'objets Articles
@@ -84,5 +108,29 @@ class ArticlesRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->orderBy('s.Categorie', 'ASC')
             ->getQuery()->getResult();
+    }
+
+    public function searchByName(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.nom LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->orderBy('a.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByFilters( ?string $nom): array
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+
+        if ($nom !== null) {
+            $queryBuilder
+                ->andWhere('o.nom LIKE :nom')
+                ->setParameter('nom', '%'.$nom.'%');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

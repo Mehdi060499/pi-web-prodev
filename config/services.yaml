@@ -10,6 +10,16 @@ services:
     App\Controller\ArticlesController:
         arguments: ['@doctrine.orm.entity_manager']  # Injection de EntityManager
         tags: ['controller.service_arguments']
+    # Configure Swift Mailer service
+    Swift_Mailer:
+        class: Swift_Mailer
+        arguments:
+            - '@Swift_Transport'
+            - '@Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport'
+
+    App\Controller\StripeController:
+        tags: ['controller.service_arguments']
+
 
     # default configuration for services in *this* file
     _defaults:
@@ -32,3 +42,5 @@ services:
 # config/services.yaml
 parameters:
     articles_images_directory: '/pictures'
+
+
