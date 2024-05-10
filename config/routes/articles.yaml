@@ -1,0 +1,18 @@
+app_articles:
+    path: /articles
+    controller: 'App\Controller\ArticlesController::index'
+    methods: ['GET', 'POST']
+article_ajouter:
+    path: /article/ajouter
+    controller: 'App\Controller\ArticlesController::ajouter'
+
+article_modifier:
+    path: /article/{id}/modifier
+    controller: 'App\Controller\ArticlesController::modifier'
+    methods: ['GET', 'POST']
+
+
+articles_show:
+    path: /articles/show/{nom}  # Inclure le paramètre {nom}
+    controller: App\Controller\ArticlesController::getOneByNom
+

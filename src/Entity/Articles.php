@@ -25,8 +25,8 @@ class Articles
     #[ORM\Column(name: "image", type: "string", length: 100, nullable: false)]
     private ?string $image = null;
 
-    #[ORM\Column(name: "stockage", type: "integer", nullable: false)]
-    private ?int $stockage = null;
+    #[ORM\Column(name: "quantite", type: "integer", nullable: false)]
+    private ?int $quantite = null;
 
     public function getIdarticle(): ?int
     {
@@ -81,14 +81,14 @@ class Articles
         return $this;
     }
 
-    public function getStockage(): ?int
+    public function getquantite(): ?int
     {
-        return $this->stockage;
+        return $this->quantite;
     }
 
-    public function setStockage(int $stockage): static
+    public function setquantite(int $quantite): static
     {
-        $this->stockage = $stockage;
+        $this->quantite = $quantite;
 
         return $this;
     }

@@ -21,3 +21,86 @@ app_user_stat:
     controller: App\Controller\UsersController::stats
 calendar:
     resource: "@CalendarBundle/Resources/config/routing.yaml"
+
+payment_success:
+    path: /payment/success
+    controller: App\Controller\PaymentController::success
+
+payment_cancel:
+    path: /payment/cancel
+    controller: App\Controller\PaymentController::cancel
+
+stripe_checkout:
+    path: /stripe/checkout
+    controller: App\Controller\StripeController::checkout
+    methods: ['GET', 'POST']
+
+articles_index:
+    path: /articles
+    controller: App\Controller\ArticlesController::index
+    methods: ['POST']
+
+article_ajouter:
+    path: /articles/ajouter
+    controller: App\Controller\ArticlesController::ajouter
+    methods: ['GET','POST']
+
+article_modifier:
+    path: /articles/{id}/modifier
+    controller: App\Controller\ArticlesController::modifier
+    methods: ['GET','POST']
+
+article_supprimer:
+    path: /articles/{id}/supprimer
+    controller: App\Controller\ArticlesController::supprimer
+    methods: ['POST']
+
+articles_show:
+    path: /articles/show
+    controller: App\Controller\ArticlesController::getOneByNom
+    methods: ['GET']
+
+search_article:
+    path: /search-article
+    controller: App\Controller\ArticlesController::searchByName
+    methods: ['POST']
+
+articles_shop:
+    path: /articles/accueil
+    controller: App\Controller\ArticlesController::paginateArticles
+    methods: ['GET']
+
+articles_boutique:
+    path: /articles/boutique
+    controller: App\Controller\ArticlesController::boutique
+    methods: ['GET']
+
+supprimer_article_panier:
+    path: /articles/{id}/delete
+    controller: App\Controller\ArticlesController::deleteFromCart
+    methods: ['DELETE']
+
+ajouter_panier:
+    path: /articles/{id}/cart
+    controller: App\Controller\ArticlesController::addToCart
+    methods: ['GET','POST']
+
+panier:
+    path: /articles/cart
+    controller: App\Controller\ArticlesController::cart
+    methods: ['GET']
+
+ajouter_wishlist:
+    path: /articles/{id}/Wishlist
+    controller: App\Controller\ArticlesController::addToWishlist
+    methods: ['GET','POST']
+    
+wishlist:
+    path: /articles/Wishlist
+    controller: App\Controller\ArticlesController::wishlist
+    methods: ['GET']
+
+inscription_newsletter:
+    path: /inscription-newsletter
+    controller: App\Controller\ArticlesController::inscriptionNewsletter
+    methods: ['POST']

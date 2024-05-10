@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ article.nom }}
+{% endblock %}
+
+{% block body %}
+
+<h1>{{ article.nom }}</h1>
+
+<img src="{{ article.image }}" alt="{{ article.nom }}" width="200">
+
+<p>{{ article.description }}</p>
+
+{% if article.prix %}
+<p>Prix: {{ article.prix }} €</p>
+{% endif %}
+
+{% if article.stock > 0 %}
+<p>En stock: {{ article.stock }}</p>
+{% else %}
+<p>Rupture de stock</p>
+{% endif %}
+
+{% endblock %}
