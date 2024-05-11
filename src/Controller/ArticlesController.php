@@ -90,49 +90,49 @@ class ArticlesController extends AbstractController
          throw $this->createNotFoundException('L\'article avec l\'ID ' . $id . ' n\'existe pas.');
      }
 
-     // Créer le formulaire pré-rempli avec les données de l'article
-     $form = $this->createForm(ArticlesType::class, $article);
-     $form->handleRequest($request);
-     if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename ='/'.'Pictures/'.$originalFilename.'.'.$imageFile->guessExtension();
-                // Move the file to the directory where images are stored
-                try {
-                    $imageFile->move(
-                        $this->getParameter('articles_images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+        // Créer le formulaire pré-rempli avec les données de l'article
+        $form = $this->createForm(ArticlesType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+                // Gérer l'upload de l'image
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename ='/'.'Pictures/'.$originalFilename.'.'.$imageFile->guessExtension();
+                    // Move the file to the directory where images are stored
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('articles_images_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+
+                    // Update the 'imagePath' property to store the image file name
+                    $article->setImage($newFilename);
                 }
 
-                // Update the 'imagePath' property to store the image file name
-                $article->setImage($newFilename);
-            }
+            // Persist and flush the article entity
+            $entityManager =$this->entityManager;
+            $entityManager->persist($article);
+            $entityManager->flush();
 
-        // Persist and flush the article entity
-        $entityManager =$this->entityManager;
-        $entityManager->persist($article);
-        $entityManager->flush();
+            return $this->redirectToRoute('app_articles');
+        }
 
-        return $this->redirectToRoute('app_articles');
-    }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traiter les données du formulaire et mettre à jour l'article dans la base de données
+            $this->entityManager->flush();
 
-     if ($form->isSubmitted() && $form->isValid()) {
-         // Traiter les données du formulaire et mettre à jour l'article dans la base de données
-         $this->entityManager->flush();
+            // Rediriger vers une nouvelle page ou une autre action après la modification
+            return $this->redirectToRoute('app_articles');
+        }
 
-         // Rediriger vers une nouvelle page ou une autre action après la modification
-         return $this->redirectToRoute('app_articles');
-     }
-
-     // Afficher le formulaire dans la vue de modification de l'article
-     return $this->render('articles/backoffice/modifier.html.twig', [
-         'form' => $form->createView(),
-     ]);
+        // Afficher le formulaire dans la vue de modification de l'article
+        return $this->render('articles/backoffice/modifier.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
 
