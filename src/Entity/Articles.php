@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticlesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: "articles")]
-#[ORM\Entity(repositoryClass: ArticlesRepository::class)]
+#[ORM\Entity]
 class Articles
 {
     #[ORM\Id]
@@ -26,8 +25,8 @@ class Articles
     #[ORM\Column(name: "image", type: "string", length: 100, nullable: false)]
     private ?string $image = null;
 
-    #[ORM\Column(name: "Quantite", type: "integer", nullable: false)]
-    private ?int $Quantite = null;
+    #[ORM\Column(name: "quantite", type: "integer", nullable: false)]
+    private ?int $quantite = null;
 
     public function getIdarticle(): ?int
     {
@@ -82,14 +81,14 @@ class Articles
         return $this;
     }
 
-    public function getQuantite(): ?int
+    public function getquantite(): ?int
     {
-        return $this->Quantite;
+        return $this->quantite;
     }
 
-    public function setQuantite(int $stockage): static
+    public function setquantite(int $quantite): static
     {
-        $this->stockage = $Quantite;
+        $this->quantite = $quantite;
 
         return $this;
     }

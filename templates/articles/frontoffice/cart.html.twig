@@ -1,4 +1,4 @@
-{% extends 'baseA.html.twig' %}
+{% extends 'base.html.twig' %}
 
 
 
@@ -31,16 +31,15 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="{{path('articles_shop')}}" class="nav-item nav-link active">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
-                            <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
+                            <a href="{{path('articles_shop')}}" class="nav-item nav-link ">Accueil</a>
+                            <a href="{{path('articles_boutique')}}" class="nav-item nav-link">Boutique</a>
+                            <a href="{{path('wishlist')}}" class="nav-item nav-link">Wishlist</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                    <a href="{{path('panier')}}" class="dropdown-item">Cart</a>
-                                    <a href="chackout.html" class="dropdown-item">Chackout</a>
-                                    <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                    <a href="404.html" class="dropdown-item">404 Page</a>
+                                    <a href="{{path('panier')}}" class="dropdown-item active">Panier</a>
+                                    <a href="chackout.html" class="dropdown-item">Paiement</a>
+                                    <a href="testimonial.html" class="dropdown-item">Avis</a>
                                 </div>
                             </div>
                             <a href="contact.html" class="nav-item nav-link">Contact</a>
@@ -51,7 +50,7 @@
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                 <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                             </a>
-                            <a href="#" class="my-auto">
+                            <a href="{{path('profile')}}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                         </div>
@@ -122,26 +121,69 @@
                                             <p class="mb-0 mt-4">{{article.nom}}</p>
                                         </td>
                                         <td>
-                                            <p class="mb-0 mt-4">{{article.prix}}</p>
+                                            <p  id="prixArticle" class="mb-0 mt-4">{{article.prix}}</p>
                                         </td>
                                         <td>
-                                            <div class="input-group quantity mt-4" style="width: 100px;">
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
+                                        <div class="input-group quantity mt-4" style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-minus rounded-circle bg-light border" onclick="decrementQuantity(this)">
                                                     <i class="fa fa-minus"></i>
-                                                    </button>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm text-center border-0" value="1">
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                </div>
+                                                </button>
                                             </div>
+                                            <input type="text" class="form-control form-control-sm text-center border-0 quantityInput" value="1">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-plus rounded-circle bg-light border" onclick="incrementQuantity(this)">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                         </td>
-                                        <td>
-                                            <p class="mb-0 mt-4">2.99 $</p>
+                                        <script>
+                                            function incrementQuantity(btn) {
+                                                var input = btn.parentNode.previousElementSibling;
+                                                var currentValue = parseInt(input.value);
+                                                if (!isNaN(currentValue)) {
+                                                    input.value = currentValue + 1;
+                                                } else {
+                                                    input.value = 1;
+                                                }
+                                            }
+
+                                            function decrementQuantity(btn) {
+                                                var input = btn.parentNode.nextElementSibling;
+                                                var currentValue = parseInt(input.value);
+                                                if (!isNaN(currentValue) && currentValue > 1) {
+                                                    input.value = currentValue - 1;
+                                                } else {
+                                                    input.value = 1;
+                                                }
+                                            }
+                                        </script>
+                                        <td >
+                                            <p class="mb-0 mt-4 totalAmount">{{  article.prix }} TND</p> <!-- Ajoutez cette ligne pour afficher le montant total -->
                                         </td>
+                                        <script>
+                                            function updateTotalAmount() {
+                                                var quantities = document.querySelectorAll('.quantityInput');
+                                                var totalAmounts = document.querySelectorAll('.totalAmount');
+                                                // Parcourez chaque élément de quantité et mettez à jour le montant total correspondant
+                                                for (var i = 0; i < quantities.length; i++) {
+                                                    var quantity = parseInt(quantities[i].value);
+                                                    var prix = parseFloat("{{ article.prix }}");
+                                                    var totalAmount = quantity * prix;
+                                                    totalAmounts[i].textContent = totalAmount.toFixed(2) + ' TND';
+                                                }
+                                            }
+                                            // Ajoutez un événement de changement à chaque champ de quantité
+                                            var quantities = document.querySelectorAll('.quantityInput');
+                                            for (var i = 0; i < quantities.length; i++) {
+                                                quantities[i].addEventListener('change', updateTotalAmount);
+                                            }
+                                            // Appelez la fonction initiale pour mettre à jour les montants totaux au chargement de la page
+                                            updateTotalAmount();
+
+                                        </script>
+
                                         <td>
                                             <button class="btn btn-md rounded-circle bg-light border mt-4" >
                                                 <i class="fa fa-times text-danger"></i>
@@ -155,7 +197,7 @@
                 </div>
             <div class="mt-5">
             <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
-            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
+            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button"> Utiliser le bon de réduction</button>
             </div>
             <div class="row g-4 justify-content-end">
                 <div class="col-8"></div>
@@ -164,8 +206,8 @@
                         <div class="p-4">
                             <h1 class="display-6 mb-4">Recap du <span class="fw-normal">panier</span></h1>
                             <div class="d-flex justify-content-between mb-4">
-                                <h5 class="mb-0 me-4">sous-total:</h5>
-                                <p class="mb-0">{{total_price}} TND</p>
+                                <h5 class="mb-0 me-4">Sous-total:</h5>
+                                <p class="mb-0 sub-total">{{ total_price }} TND</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-0 me-4">Livraison</h5>
@@ -176,12 +218,58 @@
                         </div>
                         <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
-                            <p class="mb-0 pe-4">{{total_price + 3.00}} TND</p>
+                            <p class="mb-0 total">{{ total_price + 3.00 }} TND</p>
                         </div>
-                        <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button"> Passer au paiement</button>
+                        <button id="checkout-button" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button"> Passer au paiement</button>
+                        <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1PCMnpIVDxqesvSmwdLAX4zN"
+  publishable-key="pk_test_51P9pU0IVDxqesvSmcaNKqyGbdoJVK6vRtxtt5746jxI2tyB7wqDx3fLtKh0DDD3F2gZUJmvNUjZCo5SOb6EIaytH00IUieBik2"
+>
+</stripe-buy-button>
+                        <a href="{{path('stripe_checkout')}}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">payer</a>
                     </div>
                 </div>
             </div>
+
+            <script>
+                var checkoutButton = document.getElementById('checkout-button');
+
+                checkoutButton.addEventListener('click', function() {
+                    // Récupérer le sous-total depuis la page
+                    var subTotal = parseFloat(document.querySelector('.sub-total').textContent);
+                    // Récupérer le total depuis la page
+                    var total = parseFloat(document.querySelector('.total').textContent);
+
+                    // Envoyer les données de paiement à Stripe et effectuer la redirection
+                    fetch('{{ path('stripe_checkout') }}', {
+                        method: 'POST',
+                        body: JSON.stringify({ subTotal: subTotal, total: total }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(session) {
+                        return stripe.redirectToCheckout({ sessionId: session.id });
+                    })
+                    .then(function(result) {
+                        if (result.error) {
+                            alert(result.error.message);
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                    });
+                });
+
+            </script>
+
         </div>
 
         <!-- Footer Start -->
@@ -260,6 +348,21 @@
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+        
+        <script type="text/javascript">
+            (function(d, t) {
+                var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+                v.onload = function() {
+                    window.voiceflow.chat.load({
+                    verify: { projectID: '662ae5e0b2edb729ad00ae2f' },
+                    url: 'https://general-runtime.voiceflow.com',
+                    versionID: 'production'
+                    });
+                }
+                v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+            })(document, 'script');
+        </script>
 
 
 

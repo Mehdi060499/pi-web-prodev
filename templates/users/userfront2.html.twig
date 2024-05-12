@@ -9,9 +9,12 @@ TOUNSI LL TOUNSI
     <div class="form-box">
         <div class="login-container" id="login">
             <div class="top">
-                <span>Don't have an account? <a href="#" onclick="register()">Sign Up</a></span>
+                <span>Don't have an account? <a href="{{ path ('userfront')}}" onclick="register()">Sign Up</a></span>
+                <span>You want to register as a Fournisseur  <a href="{{ path ('app_vendeur_inscription1')}}" onclick="register()">Sign Up</a></span>
                 <header>Login</header>
             </div>
+ 
+
             {{ form_start(loginForm) }}
             <div class="input-box">
                 {{ form_row(loginForm.email, {'attr': {'class': 'input-field', 'placeholder': 'Email'}}) }}
@@ -31,7 +34,7 @@ TOUNSI LL TOUNSI
                     <label for="login-check"> Remember Me</label>
                 </div>
                 <div class="two">
-                    <label><a href="#">Forgot password?</a></label>
+                    <label><a href="">Forgot password?</a></label>
                 </div>
             </div>
         </div>

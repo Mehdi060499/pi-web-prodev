@@ -1,4 +1,3 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
@@ -17,6 +16,10 @@ framework:
     php_errors:
         log: true
 
+    trusted_proxies: '127.0.0.1' # Replace with your proxy or load balancer IP address
+
+parameters:
+    files_directory: '%kernel.project_dir%/public/uploads'
 when@test:
     framework:
         test: true

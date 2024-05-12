@@ -1,0 +1,59 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}
+    Tous les articles
+{% endblock %}
+
+{% block ktiba %}
+{% for chunk in articles|batch(4) %}
+<div class="container">
+    <div class="row">
+        {% for article in chunk %}
+        <div class="col-md-3">
+            <div class="card button-container shadow-lg mb-5 rounded" style="width: 18rem;">
+                <img src="{{ article.image }}" class="card-img-top img-fluid" style="height: 300px; object-fit: cover;"   alt="...">
+                <div class="card-body">
+                    <h2 class="card-title">{{ article.nom }}</h2>
+                    <p class="card-text">{{ article.prix }} TND</p>
+                    <a href="{{ path('article_supprimer', {'id': article.idarticle}) }}" class="btn btn-danger" data-article-id="{{ article.idarticle }}" style="margin-right: 80px;" onclick="deleteArticle(event, {{ article.idarticle }})">
+                      <img src="{{asset('Images/trash.svg')}}" />
+                    </a>
+                    <script>
+                        function deleteArticle(event, articleId) {
+                            // Empêcher le comportement par défaut du lien
+                            event.preventDefault();
+
+                            // Confirmer la suppression avec une boîte de dialogue
+                            if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+                                // Construire l'URL de suppression de l'article
+                                let deleteUrl = "{{ path('article_supprimer', {'id': 'ARTICLE_ID'}) }}".replace('ARTICLE_ID', articleId);
+
+                                // Créer une requête AJAX pour envoyer la méthode POST
+                                let xhr = new XMLHttpRequest();
+                                xhr.open('POST', deleteUrl, true);
+                                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Ajouter l'en-tête X-Requested-With pour identifier la requête AJAX
+                                xhr.onload = function () {
+                                    if (xhr.status === 200) {
+                                        // Gérer la réponse en fonction de vos besoins
+                                        alert('Article supprimé avec succès !');
+                                        // Actualiser la page ou effectuer d'autres actions si nécessaire
+                                        window.location.reload();
+                                    } else {
+                                        // Gérer les erreurs
+                                        alert('Une erreur s\'est produite lors de la suppression de l\'article.');
+                                    }
+                                };
+                                xhr.send();
+                            }
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de commande{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="display-6 mb-4">Confirmation de commande</h1>
+        <form action="{{ path('paiement') }}" method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 class="mb-4">Informations de paiement</h2>
+                    <!-- Formulaire pour les informations de paiement -->
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom sur la carte</label>
+                        <input type="text" class="form-control" id="nom" name="nom">
+                    </div>
+                    <div class="mb-3">
+                        <label for="numero_carte" class="form-label">Numéro de carte</label>
+                        <input type="text" class="form-control" id="numero_carte" name="numero_carte">
+                    </div>
+                    <div class="mb-3">
+                        <label for="expiration" class="form-label">Date d'expiration</label>
+                        <input type="text" class="form-control" id="expiration" name="expiration">
+                    </div>
+                    <div class="mb-3">
+                        <label for="cvv" class="form-label">Code de sécurité (CVV)</label>
+                        <input type="text" class="form-control" id="cvv" name="cvv">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Confirmer la commande</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'baseA.html.twig' %}
+{% extends 'base.html.twig' %}
 
 
 
@@ -7,8 +7,6 @@
 
 
 {% block body %}
-
-
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
@@ -143,12 +141,54 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ article.nom }}</h2>
                     <p class="card-text">{{ article.prix }} TND</p>
-                    <a href="{{ path('article_supprimer', {'id': article.idarticle}) }}" class="btn btn-danger" data-article-id="{{ article.idarticle }}" style="margin-right: 80px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
+                    <a href="{{ path('article_supprimer', {'id': article.idarticle}) }}" class="btn btn-danger" data-article-id="{{ article.idarticle }}" style="margin-right: 80px;" onclick="deleteArticle(event, {{ article.idarticle }})">
                       <img src="{{asset('Images/trash.svg')}}" />
                     </a>
-                    <a href="{{ path('article_modifier', {'id': article.idarticle}) }}" class="btn btn-primary" style="margin-left: 80px;" onclick="modifier(event)">
+                    <script>
+                        function deleteArticle(event, articleId) {
+                            // Empêcher le comportement par défaut du lien
+                            event.preventDefault();
+
+                            // Confirmer la suppression avec une boîte de dialogue
+                            if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+                                // Construire l'URL de suppression de l'article
+                                let deleteUrl = "{{ path('article_supprimer', {'id': 'ARTICLE_ID'}) }}".replace('ARTICLE_ID', articleId);
+
+                                // Créer une requête AJAX pour envoyer la méthode POST
+                                let xhr = new XMLHttpRequest();
+                                xhr.open('POST', deleteUrl, true);
+                                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Ajouter l'en-tête X-Requested-With pour identifier la requête AJAX
+                                xhr.onload = function () {
+                                    if (xhr.status === 200) {
+                                        // Gérer la réponse en fonction de vos besoins
+                                        alert('Article supprimé avec succès !');
+                                        // Actualiser la page ou effectuer d'autres actions si nécessaire
+                                        window.location.reload();
+                                    } else {
+                                        // Gérer les erreurs
+                                        alert('Une erreur s\'est produite lors de la suppression de l\'article.');
+                                    }
+                                };
+                                xhr.send();
+                            }
+                        }
+                    </script>
+                    <a href="{{ path('article_modifier', {'id': article.idarticle}) }}" class="btn btn-primary" style="margin-left: 80px;" onclick="editArticle(event, {{ article.idarticle }})">
                       <img src="{{asset('Images/pencil.svg')}}" />
                     </a>
+                    <script>
+                        function editArticle(event, articleId) {
+                            // Empêcher le comportement par défaut du lien
+                            event.preventDefault();
+
+                            // Construire l'URL de modification de l'article
+                            let editUrl = "{{ path('article_modifier', {'id': 'ARTICLE_ID'}) }}".replace('ARTICLE_ID', articleId);
+
+                            // Rediriger vers l'URL de modification de l'article
+                            window.location.href = editUrl;
+                        }
+                    </script>
+
                 </div>
             </div>
         </div>

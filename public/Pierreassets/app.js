@@ -65,6 +65,34 @@ deleteButtons.forEach(button => {
     });
 });
 
+    // Fonction pour effectuer la recherche
+    function searchArticle() {
+        // Récupérer le terme de recherche saisi par l'utilisateur
+        var searchTerm = document.getElementById('search-input').value;
+
+        // Effectuer une requête AJAX vers votre contrôleur Symfony pour récupérer les résultats de la recherche
+        $.ajax({
+            url: '/search-article', // Remplacez cette URL par l'URL de votre contrôleur Symfony
+            method: 'POST',
+            data: { searchTerm: searchTerm },
+            success: function(response) {
+                // Mettre à jour l'affichage avec les résultats de la recherche
+                // Ici, vous pouvez utiliser jQuery ou JavaScript pour manipuler le DOM et afficher les résultats
+            },
+            error: function(error) {
+                console.error('Erreur lors de la recherche :', error);
+            }
+        });
+    }
+
+    // Attacher un gestionnaire d'événement à la touche "Enter" pour déclencher la recherche
+    document.getElementById('search-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            searchArticle();
+        }
+    });
+
+
 
 
 
