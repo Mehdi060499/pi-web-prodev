@@ -11,6 +11,7 @@ use App\Repository\VendeurRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Stock;
+use App\Entity\Articles;
 use App\Form\StockType;
 use App\Form\LoginVType;
 use App\Form\LLoginType;
@@ -36,6 +37,7 @@ class VendeurController extends AbstractController
     {
     $vendeur = $vendeurRepository->findOneBy(['idvendeur' => $vendeurId]);
     $stock = new Stock();
+    $article = new Articles();
     $form = $this->createForm(StockType::class, $stock);
     $form->handleRequest($request);
 
@@ -43,7 +45,14 @@ class VendeurController extends AbstractController
         $stock->setIdvendeur($vendeur);
         $entityManager->persist($stock);
         $entityManager->flush();
-
+       
+        $article ->setquantite($stock->getQuantite());
+        $article -> setImage($vendeur->getImage());
+        $article -> setPrix($stock->getPrixUnite());
+        $article -> setDescription($vendeur->getDescription());
+        $article -> setNom($stock->getNomproduit());
+        $entityManager->persist($article);
+        $entityManager->flush();
         return $this->redirectToRoute('app_vendeur');
     }
 
