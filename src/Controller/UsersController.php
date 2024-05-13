@@ -43,6 +43,8 @@ use App\Form\LLoginType;
 use App\Form\SignuppType;
 use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 
 
@@ -117,8 +119,8 @@ class UsersController extends AbstractController
        // $pwd=user->get
         if ($form2->isSubmitted() && $form2->isValid()) {
             // Hacher le mot de passe
-            $hashedPassword = $passwordEncoder->encodePassword($user, $user->getMotdepasse());
-            $user->setMotdepasse($hashedPassword);
+            $hashedPassword = hash('sha256', $user->getMotdepasse());
+        $user->setMotdepasse($hashedPassword);
              $nomUtilisateur = $user->getNom();
             $emailUtilisateur = $user->getEmail();
           //  $message = "Bonjour $nomUtilisateur, votre compte $emailUtilisateur a été créé avec succès .";
@@ -138,7 +140,7 @@ class UsersController extends AbstractController
 
 
    #[Route('/userfront2', name: 'userfront2')]
-public function userfront2(Request $request, EntityManagerInterface $entityManager , AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, VendeurRepository $vendeurRepository): Response
+public function userfront2(Request $request, EntityManagerInterface $entityManager, AuthenticationUtils $authenticationUtils, SessionInterface $session, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, VendeurRepository $vendeurRepository): Response
 {
     // Créer le formulaire de connexion
     $form = $this->createForm(LoginFormType::class);
@@ -154,9 +156,9 @@ public function userfront2(Request $request, EntityManagerInterface $entityManag
         $vendeur = $vendeurRepository->findOneBy(['email' => $formData['email']]);
         $ipaddress = '';
         $login = new Logins();
-
+        $hashedPassword = hash('sha256', $formData['motdepasse']);
         // Vérifier si l'utilisateur existe et si le mot de passe est correct
-        if ($user && $passwordEncoder->isPasswordValid($user, $formData['motdepasse'])) {
+        if ($user && $user ->getpassword() == $hashedPassword) {
             // Créer la session de l'utilisateur
             $session->set('user_id', $user->getIdclient());
 
@@ -168,28 +170,23 @@ public function userfront2(Request $request, EntityManagerInterface $entityManag
             } elseif ($user->getRole() === 2) {
                 $this->sendNotification();
                 $errorMessage = "L'utilisateur est bloqué.";
-                
             }
-            
-            
-        } elseif ($vendeur && $passwordEncoder->isPasswordValid($vendeur, $formData['motdepasse']))
-        {
+        } elseif ($vendeur && $vendeur ->getMotdepasse() == $hashedPassword) {
             $session->set('vendeur_id', $vendeur->getIdvendeur());
             $login->setIdvendeur($vendeur);
             $client = HttpClient::create();
-        $response = $client->request('GET', 'http://ipinfo.io/json');
-        $data = json_decode($response->getContent(), true);
-        $ipaddress = $data['ip'];
-           $login->setIp($ipaddress); 
-           $entityManager->persist($login);
-           $entityManager->flush();
-    
+            $response = $client->request('GET', 'http://ipinfo.io/json');
+            $data = json_decode($response->getContent(), true);
+            $ipaddress = $data['ip'];
+            $login->setIp($ipaddress); 
+            $entityManager->persist($login);
+            $entityManager->flush();
+
             // Redirection en fonction du rôle de l'utilisateur
             // Modifier cette logique selon les besoins
             // Par exemple, pour un vendeur, vous pouvez rediriger vers une page spécifique
             return new RedirectResponse($this->generateUrl('app_profile'));
-        } 
-        else {
+        } else {
             $error = 'Mot de passe incorrect';
         }
     }
@@ -198,7 +195,6 @@ public function userfront2(Request $request, EntityManagerInterface $entityManag
     return $this->render('users/userfront2.html.twig', [
         'loginForm' => $form->createView(),
         'error' => $error,
-       
     ]);
 }
     
@@ -281,8 +277,8 @@ public function userfront2(Request $request, EntityManagerInterface $entityManag
         $newPassword = $form->get('motdepasse')->getData();
         if ($newPassword !== null) {
             // Hacher le nouveau mot de passe
-            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
-            $user->setMotdepasse($hashedPassword);
+            $hashedPassword = hash('sha256', $user->getMotdepasse());
+        $user->setMotdepasse($hashedPassword);
         }
         if ($form->isSubmitted() && $form->isValid()) {
             // Vérifier si un nouveau mot de passe a été fourni
@@ -310,7 +306,7 @@ public function userfront2(Request $request, EntityManagerInterface $entityManag
         $newPassword = $form->get('motdepasse')->getData();
         if ($newPassword !== null) {
             // Hacher le nouveau mot de passe
-            $hashedPassword = $passwordEncoder->encodePassword($user, $newPassword);
+            $hashedPassword = hash('sha256', $user->getMotdepasse());
             $user->setMotdepasse($hashedPassword);
         }
         if ($form->isSubmitted() && $form->isValid()) {

@@ -40,7 +40,7 @@ class Security extends AbstractController
         $form = $this->createForm(VendeurFormType::class, $vendeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+               $hashedPassword = hash('sha256', $vendeur->getMotdepasse());
             $vendeur->setMotdepasse($hashedPassword);
             $image = $form->get('image')->getData();
             if($image) // ajout image
@@ -76,7 +76,7 @@ class Security extends AbstractController
                 $flashBag->add('error', 'Veuillez cocher le ReCaptcha.');
                 return $this->redirectToRoute('app_vendeur_inscription1');
             }
-            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+            $hashedPassword = hash('sha256', $vendeur->getMotdepasse());
             $vendeur->setMotdepasse($hashedPassword);
             $image = $form->get('image')->getData();
             if($image) // ajout image
@@ -200,7 +200,7 @@ public function edit($id,Request $request, VendeurRepository $vendeurRepository,
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+        $hashedPassword = hash('sha256', $vendeur->getMotdepasse());
         $vendeur->setMotdepasse($hashedPassword);
         $image = $form->get('image')->getData();
         if($image) // ajout image

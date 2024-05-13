@@ -101,7 +101,7 @@ class VendeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+            $hashedPassword = hash('sha256', $vendeur->getMotdepasse());
             $vendeur->setMotdepasse($hashedPassword);
             $image = $form->get('image')->getData();
             if($image) // ajout image
@@ -143,7 +143,7 @@ public function logout(Request $request): Response
         $form = $this->createForm(VendeurFormType::class, $vendeur);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordEncoder->encodePassword($vendeur, $vendeur->getMotdepasse());
+            $hashedPassword = hash('sha256', $vendeur->getMotdepasse());
             $vendeur->setMotdepasse($hashedPassword);
             $image = $form->get('image')->getData();
             if($image) // ajout image
