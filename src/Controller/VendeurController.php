@@ -64,9 +64,20 @@ class VendeurController extends AbstractController
 
     #[Route('/aff', name: 'app_vendeur', methods: ['GET'])]
     public function list(VendeurRepository $VendeurRepository , StockRepository $StockRepository): Response
-    {
+    { $base_dir = 'C:\xampp\htdocs\pi-web-prodev-3/public/uploads/';
+        $vendeurs = $VendeurRepository->findAll();
+        $vendeursData = [];
+        foreach ($vendeurs as $vendeur) {
+            $image_path = str_replace($base_dir, '', $vendeur->getImage());
+            $vendeursData[] = [
+                'vendeur' => $vendeur,
+                'image_path' => $image_path
+            ];
+    
+        }
         return $this->render('vendeur/aff.html.twig', [
             'Vendeur' => $VendeurRepository->findAll(),
+            'VendeursData' => $vendeursData,
             'Stock' => $StockRepository->findAll()
         ]);
     }
@@ -77,10 +88,21 @@ class VendeurController extends AbstractController
         $searchTerm = $request->query->get('search');
         $vendeurs = $searchTerm ? $vendeurRepository->findBySearchTerm($searchTerm) : $vendeurRepository->findAll();
         
+        $base_dir = 'C:\xampp\htdocs\pi-web-prodev-3/public/uploads/';
+        $vendeursData = [];
+        foreach ($vendeurs as $vendeur) {
+            $image_path = str_replace($base_dir, '', $vendeur->getImage());
+            $vendeursData[] = [
+                'vendeur' => $vendeur,
+                'image_path' => $image_path
+            ];
+        }
+        
         return $this->render('vendeur/vendeur_list.html.twig', [
-            'vendeurs' => $vendeurs
+            'VendeursData' => $vendeursData
         ]);
     }
+    
 
     #[Route('/{id}/deletev', name: 'app_vendeur_delete', methods: ['POST'])]
     public function delete($id, VendeurRepository $vendeurRepository, StockRepository $StockRepository, Request $request): Response
@@ -115,12 +137,12 @@ class VendeurController extends AbstractController
             $image = $form->get('image')->getData();
             if($image) // ajout image
             {
-                $fileName = md5(uniqid()).'.'.$image->guessExtension();
+                $fileName = $image->getClientOriginalName(); // Get the original file name
+                $filePath = $this->getParameter('files_directory') . '/' . $fileName; // Concatenate directory path with filename
                 $image->move($this->getParameter('files_directory'), $fileName);
-                $vendeur->setImage($fileName);
+                $vendeur->setImage($filePath); // Store the complete file path
             } else {
-               
-                $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
+                $vendeur->setImage("path/to/default/image.png");
             }
 
             $entityManager->persist($vendeur);

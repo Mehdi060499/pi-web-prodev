@@ -81,13 +81,14 @@ class Security extends AbstractController
             $image = $form->get('image')->getData();
             if($image) // ajout image
             {
-                $fileName = md5(uniqid()).'.'.$image->guessExtension();
+                $fileName = $image->getClientOriginalName(); // Get the original file name
+                $filePath = $this->getParameter('files_directory') . '/' . $fileName; // Concatenate directory path with filename
                 $image->move($this->getParameter('files_directory'), $fileName);
-                $vendeur->setImage($fileName);
+                $vendeur->setImage($filePath); // Store the complete file path
             } else {
-               
-                $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
+                $vendeur->setImage("path/to/default/image.png");
             }
+            
 
             $entityManager->persist($vendeur);
             $entityManager->flush();
@@ -169,13 +170,19 @@ public function profile(Request $request,SessionInterface $session,VendeurReposi
     $ipAddress = $data['ip'];
     $latitude = $data['latitude'];
     $longitude = $data['longitude'];
-
+ 
+    
     // Fetch the user data using the user_id
     $vendeur = $vendeurRepository->find($vendeurid);
+    $base_dir = 'C:\xampp\htdocs\pi-web-prodev-3/public/';
+$image_path = str_replace($base_dir, '', $vendeur->getImage());
+
     return $this->render('vendeur/Profilfront.html.twig', [
         'latitude' => $latitude,
         'longitude' => $longitude,
         'vendeur' => $vendeur,
+        'image_path' => $image_path,
+
         'stock' => $StockRepository->findAll()
     ]);
    
@@ -205,12 +212,12 @@ public function edit($id,Request $request, VendeurRepository $vendeurRepository,
         $image = $form->get('image')->getData();
         if($image) // ajout image
         {
-            $fileName = md5(uniqid()).'.'.$image->guessExtension();
+            $fileName = $image->getClientOriginalName(); // Get the original file name
+            $filePath = $this->getParameter('files_directory') . '/' . $fileName; // Concatenate directory path with filename
             $image->move($this->getParameter('files_directory'), $fileName);
-            $vendeur->setImage($fileName);
+            $vendeur->setImage($filePath); // Store the complete file path
         } else {
-           
-            $vendeur->setImage("bb3faeefbe0d47b7d651c7e551fef7e0.png");
+            $vendeur->setImage("path/to/default/image.png");
         }
 
         $entityManager->persist($vendeur);

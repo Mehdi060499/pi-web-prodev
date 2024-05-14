@@ -1,20 +1,18 @@
-{% for vendeur in vendeurs %}
+{% for data in VendeursData %}
     <div class="row">
-        <div class="col-lg-4 col-md-3"><img src="{{ asset('uploads/' ~ vendeur.image) }}" class="img-fluid" /></div>
+        <div class="col-lg-4 col-md-3"><img src="{{ asset('uploads/' ~ data.image_path) }}" class="img-fluid" /></div>
         <div class="col-lg-8 col-md-9" id="slimtest1" style="height: 250px;">
             <div>
-          
                 <h5 style="color: green;">This product is already added to the Database</h5>
-               
-                <p>{{ vendeur.nom }}</p>
-                <p>{{ vendeur.nomproduit }}</p>
-                <p>{{ vendeur.email }}</p>
-                <p>{{ vendeur.motdepasse }}</p>
-                <p>{{ vendeur.description }}</p>
-                <p>{{ vendeur.type }}</p>
-                <a class="btn btn-primary" href="{{ path('app_update', {'id': vendeur.IdVendeur}) }}" role="button">edite</a> 
+                <p>{{ data.vendeur.nom }}</p>
+                <p>{{ data.vendeur.nomproduit }}</p>
+                <p>{{ data.vendeur.email }}</p>
+                <p>{{ data.vendeur.motdepasse }}</p>
+                <p>{{ data.vendeur.description }}</p>
+                <p>{{ data.vendeur.type }}</p>
+                <a class="btn btn-primary" href="{{ path('app_update', {'id': data.vendeur.IdVendeur}) }}" role="button">edite</a> 
                 <a class="btn">{{ include('vendeur/delete.html.twig') }}</a>
-                <a class="btn btn-primary" href="{{ path('app_stock_new', {'vendeurId': vendeur.IdVendeur}) }}" role="button">insert into stock</a>
+                <a class="btn btn-primary" href="{{ path('app_stock_new', {'vendeurId': data.vendeur.IdVendeur}) }}" role="button">insert into stock</a>
             </div>
         </div>
     </div>
